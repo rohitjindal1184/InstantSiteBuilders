@@ -342,7 +342,7 @@ export default function Home() {
                 <Button
                   onClick={() => scrollToSection("features")}
                   variant="outline"
-                  className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold transition-all duration-200"
+                  className="border-2 border-white text-blue-600 hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold transition-all hover:scale-105 duration-200"
                   size="lg"
                 >
                   Learn More

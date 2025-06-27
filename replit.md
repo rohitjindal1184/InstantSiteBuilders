@@ -113,6 +113,8 @@ InstantSiteBuilders is a full-stack web application that provides fast, affordab
 - ✓ Configured Google Analytics integration for visitor tracking
 - ✓ Ensured mobile responsiveness across all devices
 - ✓ Applied blue/green color scheme for trust and action
+- ✓ Integrated custom logo in navigation and footer
+- ✓ Set up email notifications via Outlook SMTP to rohitjindal1184@gmail.com
 
 ## User Preferences
 

@@ -201,7 +201,7 @@ export default function Home() {
               <img 
                 src={logoPath} 
                 alt="InstantSiteBuilders Logo" 
-                className="h-10 w-auto"
+                className="h-14 w-auto"
               />
             </div>
             
@@ -562,7 +562,7 @@ export default function Home() {
                 <img 
                   src={logoPath} 
                   alt="InstantSiteBuilders Logo" 
-                  className="h-12 w-auto brightness-0 invert"
+                  className="h-16 w-auto brightness-0 invert"
                 />
               </div>
               <p className="text-gray-300 mb-6 leading-relaxed">

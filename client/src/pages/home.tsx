@@ -13,6 +13,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
 import { insertContactSubmissionSchema, type InsertContactSubmission } from "@shared/schema";
+import logoPath from "@assets/ChatGPT Image Jun 27, 2025, 12_17_35 AM_1751008663286.png";
 import { 
   Rocket, 
   DollarSign, 
@@ -197,7 +198,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <span className="text-2xl font-bold text-blue-600">InstantSiteBuilders</span>
+              <img 
+                src={logoPath} 
+                alt="InstantSiteBuilders Logo" 
+                className="h-10 w-auto"
+              />
             </div>
             
             <div className="hidden md:block">
@@ -553,7 +558,13 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
-              <h3 className="text-2xl font-bold mb-4">InstantSiteBuilders</h3>
+              <div className="mb-4">
+                <img 
+                  src={logoPath} 
+                  alt="InstantSiteBuilders Logo" 
+                  className="h-12 w-auto brightness-0 invert"
+                />
+              </div>
               <p className="text-gray-300 mb-6 leading-relaxed">
                 Fast, affordable, and professionally built websites & apps for individuals and small businesses. 
                 Get online in 48 hours with our expert team.

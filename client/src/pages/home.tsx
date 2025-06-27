@@ -526,7 +526,7 @@ export default function Home() {
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Tell us about your project and we'll get back to you within 24
-              hours with a custom quote.
+              hours with a custom website free.
             </p>
           </div>
 

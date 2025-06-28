@@ -30,6 +30,7 @@ import {
   type InsertContactSubmission,
 } from "@shared/schema";
 import logoPath from "@assets/logo.png";
+import PayPalButton from "@/components/PayPalButton";
 import {
   Rocket,
   DollarSign,
@@ -150,6 +151,7 @@ export default function Home() {
     {
       name: "Starter",
       price: "$199",
+      priceValue: "199.00",
       description: "Perfect for small businesses and personal websites",
       features: [
         "Up to 5 pages",
@@ -162,7 +164,8 @@ export default function Home() {
     },
     {
       name: "Business",
-      price: "$299",
+      price: "$399",
+      priceValue: "399.00",
       description: "Ideal for growing businesses that need more features",
       features: [
         "Up to 10 pages",
@@ -176,7 +179,8 @@ export default function Home() {
     },
     {
       name: "Pro",
-      price: "$599",
+      price: "$799",
+      priceValue: "799.00",
       description: "Complete solution for established businesses",
       features: [
         "Unlimited pages",
@@ -452,12 +456,20 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
-                  <Button
-                    onClick={() => scrollToSection("contact")}
-                    className={`w-full ${plan.popular ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-900"}`}
-                  >
-                    Get Started
-                  </Button>
+                  <div className="space-y-3">
+                    <PayPalButton
+                      amount={plan.priceValue}
+                      currency="USD"
+                      intent="CAPTURE"
+                    />
+                    <Button
+                      onClick={() => scrollToSection("contact")}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Get Custom Quote
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}

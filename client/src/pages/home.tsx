@@ -461,6 +461,7 @@ export default function Home() {
                       amount={plan.priceValue}
                       currency="USD"
                       intent="CAPTURE"
+                      buttonId={`paypal-button-${index}`}
                     />
                     <Button
                       onClick={() => scrollToSection("contact")}

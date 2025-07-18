@@ -1,30 +1,24 @@
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 import type { ContactSubmission } from '@shared/schema';
 
-// Create Outlook SMTP transporter
-const transporter = nodemailer.createTransport({
-  host: 'smtp-mail.outlook.com',
-  port: 587,
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: process.env.OUTLOOK_EMAIL,
-    pass: process.env.OUTLOOK_PASSWORD,
-  },
-  tls: {
-    ciphers: 'SSLv3'
-  }
-});
+// Configure SendGrid
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
 export async function sendContactNotification(submission: ContactSubmission): Promise<boolean> {
   try {
-    if (!process.env.OUTLOOK_EMAIL || !process.env.OUTLOOK_PASSWORD) {
-      console.warn('Outlook email credentials not configured - email notifications disabled');
+    if (!process.env.SENDGRID_API_KEY) {
+      console.warn('SendGrid API key not configured - email notifications disabled');
       return false;
     }
 
     const mailOptions = {
-      from: process.env.OUTLOOK_EMAIL,
       to: 'rohitjindal1184@gmail.com',
+      from: {
+        email: 'noreply@instantsitebuilders.com',
+        name: 'InstantSiteBuilders'
+      },
       subject: `New Contact Form Submission - ${submission.name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -43,18 +37,10 @@ export async function sendContactNotification(submission: ContactSubmission): Pr
                 <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Email:</td>
                 <td style="padding: 8px 0; color: #1f2937;">${submission.email}</td>
               </tr>
-              ${submission.company ? `
               <tr>
-                <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Company:</td>
+                <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Business Name:</td>
                 <td style="padding: 8px 0; color: #1f2937;">${submission.company}</td>
               </tr>
-              ` : ''}
-              ${submission.projectType ? `
-              <tr>
-                <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Project Type:</td>
-                <td style="padding: 8px 0; color: #1f2937;">${submission.projectType}</td>
-              </tr>
-              ` : ''}
               <tr>
                 <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Submitted:</td>
                 <td style="padding: 8px 0; color: #1f2937;">${submission.createdAt.toLocaleString()}</td>
@@ -63,7 +49,7 @@ export async function sendContactNotification(submission: ContactSubmission): Pr
           </div>
           
           <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb;">
-            <h3 style="color: #374151; margin-top: 0;">Message</h3>
+            <h3 style="color: #374151; margin-top: 0;">Business Details</h3>
             <p style="color: #1f2937; line-height: 1.6; margin: 0;">${submission.message.replace(/\n/g, '<br>')}</p>
           </div>
           
@@ -79,19 +65,18 @@ New Contact Form Submission
 
 Name: ${submission.name}
 Email: ${submission.email}
-${submission.company ? `Company: ${submission.company}` : ''}
-${submission.projectType ? `Project Type: ${submission.projectType}` : ''}
+Business Name: ${submission.company}
 Submitted: ${submission.createdAt.toLocaleString()}
 
-Message:
+Business Details:
 ${submission.message}
 
 This email was sent from your InstantSiteBuilders contact form.
       `
     };
 
-    await transporter.sendMail(mailOptions);
-    console.log('Contact form notification sent successfully');
+    await sgMail.send(mailOptions);
+    console.log('Contact form notification sent successfully to rohitjindal1184@gmail.com');
     return true;
   } catch (error) {
     console.error('Error sending contact form notification:', error);

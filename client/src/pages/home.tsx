@@ -30,6 +30,7 @@ import {
   type InsertContactSubmission,
 } from "@shared/schema";
 import logoPath from "@assets/logo.png";
+import PayPalButton from "@/components/PayPalButton";
 import {
   Rocket,
   Gift,
@@ -125,9 +126,9 @@ export default function Home() {
     },
     {
       icon: Gift,
-      title: "100% Free",
+      title: "Free Basic Option",
       description:
-        "Get a professional website completely free. No hidden costs, no catches - just a beautiful website for your business.",
+        "Get a professional basic website completely free. No hidden costs, no catches - perfect for getting started online.",
       color: "green",
     },
     {
@@ -149,6 +150,8 @@ export default function Home() {
   const services = [
     {
       name: "Basic Website",
+      price: "FREE",
+      priceValue: "0.00",
       description: "Perfect for small businesses and personal websites",
       features: [
         "Up to 5 pages",
@@ -158,9 +161,12 @@ export default function Home() {
         "Free hosting setup",
       ],
       popular: false,
+      isFree: true,
     },
     {
       name: "Business Website", 
+      price: "$399",
+      priceValue: "399.00",
       description: "Ideal for growing businesses that need more features",
       features: [
         "Up to 10 pages",
@@ -171,9 +177,12 @@ export default function Home() {
         "Social media integration",
       ],
       popular: true,
+      isFree: false,
     },
     {
       name: "Custom Web App",
+      price: "$799",
+      priceValue: "799.00",
       description: "Complete solution for established businesses",
       features: [
         "Unlimited pages",
@@ -184,26 +193,27 @@ export default function Home() {
         "Custom features",
       ],
       popular: false,
+      isFree: false,
     },
   ];
 
   const testimonials = [
     {
-      text: "InstantSiteBuilders delivered exactly what they promised. Our new website looks amazing and we were online in just 2 days. The whole process was smooth and professional - and it was completely free!",
+      text: "InstantSiteBuilders delivered exactly what they promised. Our new website looks amazing and we were online in just 2 days. The whole process was smooth and professional - and the basic option was completely free!",
       author: "Sarah Johnson",
       role: "Owner, Local Bakery",
       avatar:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100",
     },
     {
-      text: "Outstanding service! They understood our vision perfectly and created a website that truly represents our brand. The mobile optimization is flawless, and I couldn't believe it was free.",
+      text: "Outstanding service! They understood our vision perfectly and created a website that truly represents our brand. The mobile optimization is flawless, and the pricing was very reasonable.",
       author: "Mike Chen",
       role: "CEO, Tech Startup",
       avatar:
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100",
     },
     {
-      text: "Amazing! Other agencies quoted thousands for basic work, but InstantSiteBuilders delivered a fully featured website with e-commerce completely free. Highly recommend!",
+      text: "Great value! Other agencies quoted thousands for basic work, but InstantSiteBuilders offered a free basic option and reasonable pricing for premium features. Highly recommend!",
       author: "Emily Rodriguez",
       role: "Founder, Fashion Boutique",
       avatar:
@@ -325,8 +335,8 @@ export default function Home() {
                 <span className="text-green-400">Instantly</span>
               </h1>
               <p className="text-xl md:text-2xl mb-8 text-blue-100 leading-relaxed">
-                Free, fast, and professionally built websites & apps for
-                individuals and small businesses
+                Fast and professionally built websites & apps for
+                individuals and small businesses - starting free!
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button
@@ -366,7 +376,7 @@ export default function Home() {
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               We deliver professional websites that help your business grow,
-              with unmatched speed and completely free of charge.
+              with unmatched speed and a free basic option to get you started.
             </p>
           </div>
 
@@ -407,11 +417,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Free Website Design Services
+              Website Design Services
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Choose the service that fits your needs. All services are completely free,
-              including hosting setup and ongoing support.
+              Choose the service that fits your needs. Basic websites are completely free,
+              with premium options available for advanced features.
             </p>
           </div>
 
@@ -419,11 +429,11 @@ export default function Home() {
             {services.map((service, index) => (
               <Card
                 key={index}
-                className={`relative hover:shadow-xl transition-shadow duration-300 ${service.popular ? "border-2 border-green-600 shadow-xl" : ""}`}
+                className={`relative hover:shadow-xl transition-shadow duration-300 ${service.popular ? "border-2 border-blue-600 shadow-xl" : ""}`}
               >
                 {service.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                    <span className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
                       Most Popular
                     </span>
                   </div>
@@ -433,10 +443,10 @@ export default function Home() {
                     {service.name}
                   </CardTitle>
                   <div className="mb-6">
-                    <span className="text-4xl font-bold text-green-600">
-                      FREE
+                    <span className={`text-4xl font-bold ${service.isFree ? "text-green-600" : "text-blue-600"}`}>
+                      {service.price}
                     </span>
-                    <span className="text-gray-600 ml-2">always</span>
+                    <span className="text-gray-600 ml-2">{service.isFree ? "always" : "one-time"}</span>
                   </div>
                   <p className="text-gray-600">{service.description}</p>
                 </CardHeader>
@@ -450,12 +460,30 @@ export default function Home() {
                     ))}
                   </ul>
                   <div className="space-y-3">
-                    <Button
-                      onClick={() => scrollToSection("contact")}
-                      className="w-full bg-green-600 hover:bg-green-700 text-white"
-                    >
-                      Get Started Free
-                    </Button>
+                    {service.isFree ? (
+                      <Button
+                        onClick={() => scrollToSection("contact")}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white"
+                      >
+                        Get Started Free
+                      </Button>
+                    ) : (
+                      <>
+                        <PayPalButton
+                          amount={service.priceValue}
+                          currency="USD"
+                          intent="CAPTURE"
+                          buttonId={`paypal-button-${index}`}
+                        />
+                        <Button
+                          onClick={() => scrollToSection("contact")}
+                          variant="outline"
+                          className="w-full"
+                        >
+                          Get Custom Quote
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -525,7 +553,7 @@ export default function Home() {
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Tell us about your project and we'll get back to you within 24
-              hours with a custom website design - completely free.
+              hours with a custom proposal for your needs.
             </p>
           </div>
 
@@ -665,8 +693,8 @@ export default function Home() {
                         : "Send Message"}
                     </Button>
                     <p className="text-gray-600 text-sm mt-4">
-                      We'll respond within 24 hours with your free website design
-                      proposal.
+                      We'll respond within 24 hours with a custom proposal for your
+                      project.
                     </p>
                   </div>
                 </form>
@@ -689,9 +717,9 @@ export default function Home() {
                 />
               </div>
               <p className="text-gray-300 mb-6 leading-relaxed">
-                Fast, free, and professionally built websites & apps for
+                Fast and professionally built websites & apps for
                 individuals and small businesses. Get online in 48 hours with
-                our expert team.
+                our expert team - starting free!
               </p>
               <div className="flex space-x-4">
                 <a

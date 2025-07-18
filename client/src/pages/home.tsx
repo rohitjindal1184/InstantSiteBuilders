@@ -616,7 +616,7 @@ export default function Home() {
                         <FormControl>
                           <Textarea
                             rows={6}
-                            placeholder="Tell us about your project, timeline, and any specific requirements..."
+                            placeholder="Tell us about your business, timeline, and any specific requirements..."
                             className="resize-vertical"
                             {...field}
                           />

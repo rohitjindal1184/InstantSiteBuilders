@@ -31,7 +31,7 @@ export const insertContactSubmissionSchema = createInsertSchema(contactSubmissio
   email: z.string().email("Please enter a valid email address"),
   name: z.string().min(1, "Name is required"),
   company: z.string().min(1, "Business name is required"),
-  message: z.string().min(10, "Please provide more details about your project"),
+  message: z.string().min(10, "Please provide more details about your business"),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

@@ -611,7 +611,7 @@ export default function Home() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-sm font-semibold text-gray-900">
-                          Project Details *
+                          Business Details *
                         </FormLabel>
                         <FormControl>
                           <Textarea

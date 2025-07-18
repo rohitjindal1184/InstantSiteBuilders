@@ -1,24 +1,30 @@
-import sgMail from '@sendgrid/mail';
+import nodemailer from 'nodemailer';
 import type { ContactSubmission } from '@shared/schema';
 
-// Configure SendGrid
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-}
+// Create Outlook SMTP transporter
+const transporter = nodemailer.createTransporter({
+  host: 'smtp-mail.outlook.com',
+  port: 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.OUTLOOK_EMAIL,
+    pass: process.env.OUTLOOK_PASSWORD,
+  },
+  tls: {
+    ciphers: 'SSLv3'
+  }
+});
 
 export async function sendContactNotification(submission: ContactSubmission): Promise<boolean> {
   try {
-    if (!process.env.SENDGRID_API_KEY) {
-      console.warn('SendGrid API key not configured - email notifications disabled');
+    if (!process.env.OUTLOOK_EMAIL || !process.env.OUTLOOK_PASSWORD) {
+      console.warn('Outlook email credentials not configured - email notifications disabled');
       return false;
     }
 
     const mailOptions = {
+      from: process.env.OUTLOOK_EMAIL,
       to: 'rohitjindal1184@gmail.com',
-      from: {
-        email: 'noreply@instantsitebuilders.com',
-        name: 'InstantSiteBuilders'
-      },
       subject: `New Contact Form Submission - ${submission.name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -75,7 +81,7 @@ This email was sent from your InstantSiteBuilders contact form.
       `
     };
 
-    await sgMail.send(mailOptions);
+    await transporter.sendMail(mailOptions);
     console.log('Contact form notification sent successfully to rohitjindal1184@gmail.com');
     return true;
   } catch (error) {

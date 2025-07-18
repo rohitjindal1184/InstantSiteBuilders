@@ -12,7 +12,7 @@ export const contactSubmissions = pgTable("contact_submissions", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),
-  company: text("company"),
+  company: text("company").notNull(),
   projectType: text("project_type"),
   message: text("message").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -32,6 +32,7 @@ export const insertContactSubmissionSchema = createInsertSchema(contactSubmissio
 }).extend({
   email: z.string().email("Please enter a valid email address"),
   name: z.string().min(1, "Name is required"),
+  company: z.string().min(1, "Company name is required"),
   message: z.string().min(10, "Please provide more details about your project"),
 });
 

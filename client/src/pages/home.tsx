@@ -599,11 +599,11 @@ export default function Home() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-sm font-semibold text-gray-900">
-                          Company/Organization
+                          Company/Organization *
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter your company name (optional)"
+                            placeholder="Enter your company name"
                             {...field}
                           />
                         </FormControl>

@@ -7,8 +7,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false, // true for 465, false for other ports
   auth: {
-    user: process.env.OUTLOOK_EMAIL,
-    pass: process.env.OUTLOOK_PASSWORD,
+    user: 'support@calerto.app',
+    pass: 'ydkdnscfyrkpmkrz',
   },
   tls: {
     ciphers: 'SSLv3'
@@ -17,13 +17,11 @@ const transporter = nodemailer.createTransport({
 
 export async function sendContactNotification(submission: ContactSubmission): Promise<boolean> {
   try {
-    if (!process.env.OUTLOOK_EMAIL || !process.env.OUTLOOK_PASSWORD) {
-      console.warn('Outlook email credentials not configured - email notifications disabled');
-      return false;
-    }
+    // Email credentials are configured directly in the transporter
+    console.log('Sending email notification...');
 
     const mailOptions = {
-      from: process.env.OUTLOOK_EMAIL,
+      from: 'support@calerto.app',
       to: 'rohitjindal1184@gmail.com',
       subject: `New Contact Form Submission - ${submission.name}`,
       html: `

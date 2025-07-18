@@ -30,7 +30,7 @@ import {
   type InsertContactSubmission,
 } from "@shared/schema";
 import logoPath from "@assets/logo.png";
-import PayPalButton from "@/components/PayPalButton";
+
 import {
   Rocket,
   Gift,
@@ -156,9 +156,7 @@ export default function Home() {
       features: [
         "Up to 5 pages",
         "Mobile responsive design", 
-        "Basic SEO optimization",
         "Contact form",
-        "Free hosting setup",
       ],
       popular: false,
       isFree: true,
@@ -171,10 +169,10 @@ export default function Home() {
       features: [
         "Up to 10 pages",
         "Advanced SEO optimization",
-        "E-commerce integration",
         "Content management system",
         "Analytics integration",
         "Social media integration",
+        "Hosting Fee Extra*"
       ],
       popular: true,
       isFree: false,
@@ -189,8 +187,8 @@ export default function Home() {
         "Custom web application",
         "Advanced e-commerce",
         "Database integration",
-        "Priority support",
         "Custom features",
+        "Hosting Fee Extra*"
       ],
       popular: false,
       isFree: false,
@@ -468,21 +466,12 @@ export default function Home() {
                         Get Started Free
                       </Button>
                     ) : (
-                      <>
-                        <PayPalButton
-                          amount={service.priceValue}
-                          currency="USD"
-                          intent="CAPTURE"
-                          buttonId={`paypal-button-${index}`}
-                        />
-                        <Button
-                          onClick={() => scrollToSection("contact")}
-                          variant="outline"
-                          className="w-full"
-                        >
-                          Get Custom Quote
-                        </Button>
-                      </>
+                      <Button
+                        onClick={() => scrollToSection("contact")}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        Get Custom Quote
+                      </Button>
                     )}
                   </div>
                 </CardContent>

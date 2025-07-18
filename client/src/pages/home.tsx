@@ -4,13 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import {
   Form,
   FormControl,
@@ -58,7 +52,6 @@ export default function Home() {
       name: "",
       email: "",
       company: "",
-      projectType: "",
       message: "",
     },
   });
@@ -607,43 +600,6 @@ export default function Home() {
                             {...field}
                           />
                         </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="projectType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-semibold text-gray-900">
-                          Project Type
-                        </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select project type" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="basic">
-                              Basic Website (up to 5 pages)
-                            </SelectItem>
-                            <SelectItem value="business">
-                              Business Website (up to 10 pages)
-                            </SelectItem>
-                            <SelectItem value="custom">
-                              Custom Website/App (unlimited pages)
-                            </SelectItem>
-                            <SelectItem value="other">
-                              Other (please specify in message)
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}

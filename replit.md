@@ -99,7 +99,33 @@ InstantSiteBuilders is a full-stack web application that provides fast, affordab
 
 ## Changelog
 
+## Environment Configuration
+
+The application uses environment variables stored in a `.env` file for configuration. Copy `.env.example` to `.env` and update the values:
+
+```bash
+cp .env.example .env
+```
+
+### Required Environment Variables
+- `DATABASE_URL`: PostgreSQL database connection string
+- `OUTLOOK_EMAIL`: Email address for sending contact form notifications
+- `OUTLOOK_PASSWORD`: Password or app password for the email account
+
+### Optional Environment Variables
+- `SENDGRID_API_KEY`: Alternative email service (if not using Outlook)
+- `VITE_GA_MEASUREMENT_ID`: Google Analytics tracking ID
+- `PAYPAL_CLIENT_ID` / `PAYPAL_CLIENT_SECRET`: PayPal payment integration
+
 ## Recent Changes
+
+### July 18, 2025 - Environment Configuration & Email Setup
+- ✓ Created `.env` file for environment variable management
+- ✓ Added dotenv package for loading environment variables
+- ✓ Updated .gitignore to exclude .env files from version control
+- ✓ Configured email system to use Outlook SMTP with credentials from .env
+- ✓ Email notifications now send to rohitjindal1184@gmail.com for all contact form submissions
+- ✓ Professional HTML email templates with business details formatting
 
 ### June 27, 2025 - Professional Landing Page Complete
 - ✓ Built complete InstantSiteBuilders landing page with modern design

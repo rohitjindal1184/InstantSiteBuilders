@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
 export async function sendContactNotification(submission: ContactSubmission): Promise<boolean> {
   try {
     if (!process.env.OUTLOOK_EMAIL || !process.env.OUTLOOK_PASSWORD) {
-      console.error('Outlook email credentials not configured');
+      console.warn('Outlook email credentials not configured - email notifications disabled');
       return false;
     }
 

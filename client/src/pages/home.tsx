@@ -153,9 +153,24 @@ export default function Home() {
       features: [
         "Up to 5 pages",
         "Mobile responsive design", 
+        "Basic SEO optimization",
         "Contact form",
+        "Free hosting setup",
       ],
       popular: false,
+    },
+    {
+      name: "Business Website", 
+      description: "Ideal for growing businesses that need more features",
+      features: [
+        "Up to 10 pages",
+        "Advanced SEO optimization",
+        "E-commerce integration",
+        "Content management system",
+        "Analytics integration",
+        "Social media integration",
+      ],
+      popular: true,
     },
     {
       name: "Custom Web App",
@@ -163,7 +178,9 @@ export default function Home() {
       features: [
         "Unlimited pages",
         "Custom web application",
+        "Advanced e-commerce",
         "Database integration",
+        "Priority support",
         "Custom features",
       ],
       popular: false,

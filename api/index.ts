@@ -1,31 +1,55 @@
 // Vercel serverless function entry point
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { storage } from "../server/storage";
-import { insertContactSubmissionSchema } from "../shared/schema";
+import { insertContactSubmissionSchema, contactSubmissions } from "../shared/schema";
 import { sendContactNotification } from "../server/email";
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
 import { z } from "zod";
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+// Initialize database connection for serverless
+let db: ReturnType<typeof drizzle> | null = null;
 
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+function getDatabase() {
+  if (!db) {
+    if (!process.env.DATABASE_URL) {
+      throw new Error("DATABASE_URL environment variable is required");
+    }
+    const sql = neon(process.env.DATABASE_URL);
+    db = drizzle(sql);
   }
+  return db;
+}
 
-  // Parse the URL to determine which endpoint to handle
-  const url = new URL(req.url || '', 'http://localhost');
-  const pathname = url.pathname.replace('/api', '');
-
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  console.log('API Request:', req.method, req.url);
+  
   try {
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
+
+    // Parse the URL to determine which endpoint to handle
+    const url = new URL(req.url || '', 'http://localhost');
+    const pathname = url.pathname.replace('/api', '');
+    console.log('Parsed pathname:', pathname);
     // Contact form submission endpoint
     if (pathname === '/contact' && req.method === 'POST') {
       try {
+        console.log('Processing contact form submission:', req.body);
         const validatedData = insertContactSubmissionSchema.parse(req.body);
-        const submission = await storage.createContactSubmission(validatedData);
+        console.log('Data validated successfully:', validatedData);
+        
+        // Direct database operation for serverless
+        const database = getDatabase();
+        const result = await database.insert(contactSubmissions).values(validatedData).returning();
+        const submission = result[0];
+        console.log('Submission created:', submission.id);
         
         // Send email notification (optional - won't fail if email fails)
         try {
@@ -50,7 +74,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           console.error('Contact form error:', error);
           return res.status(500).json({ 
             success: false, 
-            message: "An error occurred while processing your request" 
+            message: "An error occurred while processing your request",
+            error: error instanceof Error ? error.message : 'Unknown error'
           });
         }
       }
@@ -59,8 +84,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Get all contact submissions (for admin purposes)
     if (pathname === '/contact-submissions' && req.method === 'GET') {
       try {
-        const submissions = await storage.getContactSubmissions();
-        return res.json(submissions);
+        const database = getDatabase();
+        const submissions = await database.select().from(contactSubmissions).orderBy(contactSubmissions.createdAt);
+        return res.json(submissions.reverse()); // Most recent first
       } catch (error) {
         console.error('Get submissions error:', error);
         return res.status(500).json({ 
@@ -80,7 +106,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.error('API handler error:', error);
     return res.status(500).json({ 
       success: false, 
-      message: "Internal server error" 
+      message: "Internal server error",
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 }

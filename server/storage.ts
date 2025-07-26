@@ -1,4 +1,7 @@
 import { users, contactSubmissions, type User, type InsertUser, type ContactSubmission, type InsertContactSubmission } from "@shared/schema";
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -56,4 +59,43 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database storage implementation using Drizzle ORM
+export class DatabaseStorage implements IStorage {
+  private db;
+
+  constructor() {
+    if (!process.env.DATABASE_URL) {
+      throw new Error("DATABASE_URL environment variable is required");
+    }
+    const sql = neon(process.env.DATABASE_URL);
+    this.db = drizzle(sql);
+  }
+
+  async getUser(id: number): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.username, username)).limit(1);
+    return result[0];
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const result = await this.db.insert(users).values(insertUser).returning();
+    return result[0];
+  }
+
+  async createContactSubmission(insertSubmission: InsertContactSubmission): Promise<ContactSubmission> {
+    const result = await this.db.insert(contactSubmissions).values(insertSubmission).returning();
+    return result[0];
+  }
+
+  async getContactSubmissions(): Promise<ContactSubmission[]> {
+    const result = await this.db.select().from(contactSubmissions).orderBy(contactSubmissions.createdAt);
+    return result.reverse(); // Most recent first
+  }
+}
+
+// Use database storage in production, memory storage for development
+export const storage = process.env.DATABASE_URL ? new DatabaseStorage() : new MemStorage();

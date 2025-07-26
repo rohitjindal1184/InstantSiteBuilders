@@ -26,6 +26,9 @@ export async function sendContactNotification(submission: any): Promise<boolean>
     const transporter = createTransporter();
     console.log('Sending email notification...');
 
+    // Get current timestamp
+    const now = new Date().toLocaleString();
+
     const mailOptions = {
       from: 'support@calerto.app',
       to: 'rohitjindal1184@gmail.com',
@@ -53,7 +56,7 @@ export async function sendContactNotification(submission: any): Promise<boolean>
               </tr>
               <tr>
                 <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Submitted:</td>
-                <td style="padding: 8px 0; color: #1f2937;">${new Date().toLocaleString()}</td>
+                <td style="padding: 8px 0; color: #1f2937;">${now}</td>
               </tr>
             </table>
           </div>
@@ -70,19 +73,17 @@ export async function sendContactNotification(submission: any): Promise<boolean>
           </div>
         </div>
       `,
-      text: `
-New Contact Form Submission
+      text: `New Contact Form Submission
 
 Name: ${submission.name}
 Email: ${submission.email}
 Business Name: ${submission.company}
-Submitted: ${submission.createdAt.toLocaleString()}
+Submitted: ${now}
 
 Business Details:
 ${submission.message}
 
-This email was sent from your InstantSiteBuilders contact form.
-      `
+This email was sent from your InstantSiteBuilders contact form.`
     };
 
     await transporter.sendMail(mailOptions);

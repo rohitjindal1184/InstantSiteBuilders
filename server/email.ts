@@ -20,7 +20,7 @@ const createTransporter = () => {
   });
 };
 
-export async function sendContactNotification(submission: ContactSubmission): Promise<boolean> {
+export async function sendContactNotification(submission: any): Promise<boolean> {
   try {
     // Create transporter instance for this request (better for serverless)
     const transporter = createTransporter();
@@ -53,7 +53,7 @@ export async function sendContactNotification(submission: ContactSubmission): Pr
               </tr>
               <tr>
                 <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Submitted:</td>
-                <td style="padding: 8px 0; color: #1f2937;">${submission.createdAt.toLocaleString()}</td>
+                <td style="padding: 8px 0; color: #1f2937;">${new Date().toLocaleString()}</td>
               </tr>
             </table>
           </div>

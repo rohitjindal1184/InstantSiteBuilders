@@ -1,6 +1,5 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
 import { insertContactSubmissionSchema } from "@shared/schema";
 import { sendContactNotification } from "./email";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
@@ -12,23 +11,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertContactSubmissionSchema.parse(req.body);
       
-      // Create temporary submission object for email
-      const submission = {
-        ...validatedData,
-        id: Date.now(), // Simple ID for email reference
-        createdAt: new Date(),
-      };
-      
-      // Send email notification
-      const emailSent = await sendContactNotification(submission);
-      if (!emailSent) {
-        console.warn('Failed to send email notification');
+      // Send email notification directly
+      try {
+        await sendContactNotification(validatedData);
+        
+        res.status(201).json({ 
+          success: true, 
+          message: "Thank you for your message! We'll get back to you within 24 hours."
+        });
+      } catch (emailError) {
+        console.error('Failed to send email notification:', emailError);
+        
+        res.status(500).json({ 
+          success: false, 
+          message: "Failed to send your message. Please try again."
+        });
       }
-      
-      res.status(201).json({ 
-        success: true, 
-        message: "Thank you for your message! We'll get back to you within 24 hours."
-      });
     } catch (error) {
       if (error instanceof z.ZodError) {
         res.status(400).json({ 
@@ -45,12 +43,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin endpoint - disabled since we're only sending emails
-  app.get("/api/contact-submissions", async (req, res) => {
-    res.json({ 
-      message: "Contact submissions are sent via email only - no data is stored" 
-    });
-  });
+
 
   // PayPal Routes
   app.get("/paypal/setup", async (req, res) => {

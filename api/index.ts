@@ -1,8 +1,113 @@
 // Vercel serverless function entry point
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { insertContactSubmissionSchema } from "../shared/schema";
-import { sendContactNotification } from "../server/email";
 import { z } from "zod";
+import nodemailer from 'nodemailer';
+
+// Inline schema definition for serverless deployment
+const insertContactSubmissionSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Please enter a valid email address"),
+  company: z.string().min(1, "Business name is required"),
+  message: z.string().min(10, "Please provide more details about your business"),
+});
+
+// Inline email functionality for serverless deployment
+function createTransporter() {
+  if (!process.env.OUTLOOK_EMAIL || !process.env.OUTLOOK_PASSWORD) {
+    console.warn('Email credentials not configured - emails will not be sent');
+    return null;
+  }
+
+  return nodemailer.createTransport({
+    host: 'smtp-mail.outlook.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.OUTLOOK_EMAIL,
+      pass: process.env.OUTLOOK_PASSWORD,
+    },
+    connectionTimeout: 30000,
+    greetingTimeout: 30000,
+    socketTimeout: 30000
+  });
+}
+
+async function sendContactNotification(submission: any): Promise<boolean> {
+  try {
+    const transporter = createTransporter();
+    if (!transporter) {
+      console.log('Email transporter not configured - skipping email');
+      return true; // Don't fail the request if email isn't configured
+    }
+    
+    console.log('Sending email notification...');
+    const now = new Date().toLocaleString();
+
+    const mailOptions = {
+      from: process.env.OUTLOOK_EMAIL,
+      to: 'rohitjindal1184@gmail.com',
+      subject: `New Contact Form Submission - ${submission.name}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #2563eb; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">
+            New Contact Form Submission
+          </h2>
+          
+          <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #374151; margin-top: 0;">Contact Details</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Name:</td>
+                <td style="padding: 8px 0; color: #1f2937;">${submission.name}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Email:</td>
+                <td style="padding: 8px 0; color: #1f2937;">${submission.email}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Business Name:</td>
+                <td style="padding: 8px 0; color: #1f2937;">${submission.company}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Submitted:</td>
+                <td style="padding: 8px 0; color: #1f2937;">${now}</td>
+              </tr>
+            </table>
+          </div>
+          
+          <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb;">
+            <h3 style="color: #374151; margin-top: 0;">Business Details</h3>
+            <p style="color: #1f2937; line-height: 1.6; margin: 0;">${submission.message.replace(/\n/g, '<br>')}</p>
+          </div>
+          
+          <div style="margin-top: 30px; padding: 20px; background-color: #f9fafb; border-radius: 8px; text-align: center;">
+            <p style="color: #6b7280; margin: 0; font-size: 14px;">
+              This email was sent from your InstantSiteBuilders contact form.
+            </p>
+          </div>
+        </div>
+      `,
+      text: `New Contact Form Submission
+
+Name: ${submission.name}
+Email: ${submission.email}
+Business Name: ${submission.company}
+Submitted: ${now}
+
+Business Details:
+${submission.message}
+
+This email was sent from your InstantSiteBuilders contact form.`
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log('Contact form notification sent successfully to rohitjindal1184@gmail.com');
+    return true;
+  } catch (error) {
+    console.error('Error sending contact form notification:', error);
+    return false;
+  }
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   console.log('API Request:', req.method, req.url);

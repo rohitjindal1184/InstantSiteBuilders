@@ -2,7 +2,8 @@ import nodemailer from 'nodemailer';
 import type { ContactSubmission } from '@shared/schema';
 
 // Create Outlook SMTP transporter
-const transporter = nodemailer.createTransport({
+const createTransporter = () => {
+  return nodemailer.createTransport({
   host: 'smtp-mail.outlook.com',
   port: 587,
   secure: false, // true for 465, false for other ports
@@ -10,14 +11,19 @@ const transporter = nodemailer.createTransport({
     user: 'support@calerto.app',
     pass: 'ydkdnscfyrkpmkrz',
   },
-  tls: {
-    ciphers: 'SSLv3'
-  }
-});
+    tls: {
+      rejectUnauthorized: false // Better for serverless environments
+    },
+    connectionTimeout: 30000, // 30 seconds
+    greetingTimeout: 30000, // 30 seconds
+    socketTimeout: 30000 // 30 seconds
+  });
+};
 
 export async function sendContactNotification(submission: ContactSubmission): Promise<boolean> {
   try {
-    // Email credentials are configured directly in the transporter
+    // Create transporter instance for this request (better for serverless)
+    const transporter = createTransporter();
     console.log('Sending email notification...');
 
     const mailOptions = {

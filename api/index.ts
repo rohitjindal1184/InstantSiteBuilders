@@ -1,24 +1,22 @@
 // Vercel serverless function entry point
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { insertContactSubmissionSchema, contactSubmissions } from "../shared/schema";
+import { insertContactSubmissionSchema } from "../shared/schema";
 import { sendContactNotification } from "../server/email";
-import { drizzle } from "drizzle-orm/neon-http";
-import { neon } from "@neondatabase/serverless";
 import { z } from "zod";
 
-// Initialize database connection for serverless
-let db: ReturnType<typeof drizzle> | null = null;
-
-function getDatabase() {
-  if (!db) {
-    if (!process.env.DATABASE_URL) {
-      throw new Error("DATABASE_URL environment variable is required");
-    }
-    const sql = neon(process.env.DATABASE_URL);
-    db = drizzle(sql);
-  }
-  return db;
+// In-memory storage for serverless functions
+interface ContactSubmission {
+  id: number;
+  name: string;
+  email: string;
+  company: string;
+  message: string;
+  createdAt: Date;
 }
+
+// Simple in-memory storage (resets on each function invocation)
+let submissions: ContactSubmission[] = [];
+let nextId = 1;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   console.log('API Request:', req.method, req.url);
@@ -45,10 +43,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const validatedData = insertContactSubmissionSchema.parse(req.body);
         console.log('Data validated successfully:', validatedData);
         
-        // Direct database operation for serverless
-        const database = getDatabase();
-        const result = await database.insert(contactSubmissions).values(validatedData).returning();
-        const submission = result[0];
+        // Create submission with in-memory storage
+        const submission: ContactSubmission = {
+          ...validatedData,
+          id: nextId++,
+          createdAt: new Date(),
+        };
+        submissions.push(submission);
         console.log('Submission created:', submission.id);
         
         // Send email notification (optional - won't fail if email fails)
@@ -84,9 +85,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Get all contact submissions (for admin purposes)
     if (pathname === '/contact-submissions' && req.method === 'GET') {
       try {
-        const database = getDatabase();
-        const submissions = await database.select().from(contactSubmissions).orderBy(contactSubmissions.createdAt);
-        return res.json(submissions.reverse()); // Most recent first
+        return res.json(submissions.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()));
       } catch (error) {
         console.error('Get submissions error:', error);
         return res.status(500).json({ 

@@ -182,9 +182,9 @@ cp .env.example .env
 - ✓ Implemented interactive onboarding tour with animated tooltips using Framer Motion
 - ✓ Changed "Get Custom Quote" buttons to "Get Started" for clearer call-to-action
 - ✓ Removed interactive onboarding tour per user request for cleaner interface
-- ✓ Fixed FUNCTION_INVOCATION_FAILED error by replacing in-memory storage with PostgreSQL database connection
-- ✓ Enhanced serverless function with direct Drizzle ORM database operations for Vercel compatibility
-- ✓ Added comprehensive error logging and database connection optimization for serverless environment
+- ✓ Reverted to in-memory storage per user request
+- ✓ Simplified serverless function to avoid database connection issues
+- ✓ Added comprehensive error logging for better debugging
 
 ## User Preferences
 

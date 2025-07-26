@@ -4,8 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import OnboardingTour from "@/components/onboarding/OnboardingTour";
-import TourTrigger from "@/components/onboarding/TourTrigger";
 
 import {
   Form,
@@ -46,7 +44,6 @@ import {
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showOnboardingTour, setShowOnboardingTour] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<InsertContactSubmission>({
@@ -319,7 +316,7 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="hero-section relative bg-gradient-to-br from-blue-600 to-blue-700 text-white overflow-hidden">
+      <section className="relative bg-gradient-to-br from-blue-600 to-blue-700 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -362,7 +359,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="features-section py-20 bg-white">
+      <section id="features" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -407,7 +404,7 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="services-section py-20 bg-gray-50">
+      <section id="services" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -478,7 +475,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="testimonials-section py-20 bg-white">
+      <section id="testimonials" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -530,7 +527,7 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="contact-section py-20 bg-gray-50">
+      <section id="contact" className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -547,7 +544,7 @@ export default function Home() {
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="contact-form space-y-6"
+                  className="space-y-6"
                 >
                   <div className="grid md:grid-cols-2 gap-6">
                     <FormField
@@ -782,13 +779,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      {/* Onboarding Tour Components */}
-      <TourTrigger onStartTour={() => setShowOnboardingTour(true)} />
-      <OnboardingTour
-        isVisible={showOnboardingTour}
-        onClose={() => setShowOnboardingTour(false)}
-      />
     </div>
   );
 }

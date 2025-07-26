@@ -179,6 +179,9 @@ cp .env.example .env
 - ✓ Optimized email transporter configuration for serverless environment
 - ✓ Enhanced database connection handling for Vercel's serverless functions
 - ✓ Added @vercel/node package for proper TypeScript types
+- ✓ Implemented interactive onboarding tour with animated tooltips using Framer Motion
+- ✓ Changed "Get Custom Quote" buttons to "Get Started" for clearer call-to-action
+- ✓ Removed interactive onboarding tour per user request for cleaner interface
 
 ## User Preferences
 

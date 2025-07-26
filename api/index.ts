@@ -43,26 +43,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const validatedData = insertContactSubmissionSchema.parse(req.body);
         console.log('Data validated successfully:', validatedData);
         
-        // Create submission with in-memory storage
+        // Create temporary submission object for email
         const submission: ContactSubmission = {
           ...validatedData,
           id: nextId++,
           createdAt: new Date(),
         };
-        submissions.push(submission);
-        console.log('Submission created:', submission.id);
         
-        // Send email notification (optional - won't fail if email fails)
+        // Send email notification
         try {
           await sendContactNotification(submission);
+          console.log('Email notification sent successfully');
         } catch (emailError) {
           console.warn('Failed to send email notification:', emailError);
         }
         
         return res.status(201).json({ 
           success: true, 
-          message: "Thank you for your message! We'll get back to you within 24 hours.",
-          id: submission.id 
+          message: "Thank you for your message! We'll get back to you within 24 hours."
         });
       } catch (error) {
         if (error instanceof z.ZodError) {
@@ -82,17 +80,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    // Get all contact submissions (for admin purposes)
+    // Get all contact submissions (for admin purposes) - disabled since we're only sending emails
     if (pathname === '/contact-submissions' && req.method === 'GET') {
-      try {
-        return res.json(submissions.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()));
-      } catch (error) {
-        console.error('Get submissions error:', error);
-        return res.status(500).json({ 
-          success: false, 
-          message: "An error occurred while fetching submissions" 
-        });
-      }
+      return res.json({ 
+        message: "Contact submissions are sent via email only - no data is stored" 
+      });
     }
 
     // Default 404 response

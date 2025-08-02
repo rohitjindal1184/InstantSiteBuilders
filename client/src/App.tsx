@@ -5,8 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
-import { useEffect } from "react";
-import { initGA } from "./lib/analytics";
+// Analytics library still available for tracking events and page views
 import { useAnalytics } from "./hooks/use-analytics";
 import { Analytics } from '@vercel/analytics/react';
 
@@ -22,15 +21,8 @@ function Router() {
 }
 
 function App() {
-  // Initialize Google Analytics when app loads
-  useEffect(() => {
-    // Verify required environment variable is present
-    if (!import.meta.env.VITE_GA_MEASUREMENT_ID) {
-      console.warn('Missing required Google Analytics key: VITE_GA_MEASUREMENT_ID');
-    } else {
-      initGA();
-    }
-  }, []);
+  // Google Analytics is now loaded via HTML head script tags
+  // No need for programmatic initialization since gtag is already configured
 
   return (
     <QueryClientProvider client={queryClient}>

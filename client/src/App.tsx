@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
+import Terms from "@/pages/terms";
+import Privacy from "@/pages/privacy";
 // Analytics library still available for tracking events and page views
 import { useAnalytics } from "./hooks/use-analytics";
 import { Analytics } from '@vercel/analytics/react';
@@ -15,6 +17,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/terms" component={Terms} />
+      <Route path="/privacy" component={Privacy} />
       <Route component={NotFound} />
     </Switch>
   );

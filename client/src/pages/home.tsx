@@ -19,6 +19,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
+import { Link } from "wouter";
 import {
   insertContactSubmissionSchema,
   type InsertContactSubmission,
@@ -757,24 +758,24 @@ export default function Home() {
               © 2024 InstantSiteBuilders. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a
-                href="#"
+              <button
+                onClick={() => scrollToSection("features")}
                 className="text-gray-300 hover:text-white text-sm transition-colors duration-200"
               >
                 About
-              </a>
-              <a
-                href="#"
+              </button>
+              <Link 
+                href="/terms"
                 className="text-gray-300 hover:text-white text-sm transition-colors duration-200"
               >
                 Terms
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link 
+                href="/privacy"
                 className="text-gray-300 hover:text-white text-sm transition-colors duration-200"
               >
                 Privacy
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -44,4 +44,20 @@
     <priority>0.8</priority>
   </url>
   
+  <!-- Terms of Use -->
+  <url>
+    <loc>https://instantsitebuilders.com/terms</loc>
+    <lastmod>2025-08-02</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://instantsitebuilders.com/privacy</loc>
+    <lastmod>2025-08-02</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
 </urlset>

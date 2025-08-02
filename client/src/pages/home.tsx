@@ -755,7 +755,7 @@ export default function Home() {
 
           <div className="border-t border-gray-600 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-300 text-sm">
-              © 2024 InstantSiteBuilders. All rights reserved.
+              © 2025 InstantSiteBuilders. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <button

@@ -8,11 +8,11 @@ import Home from "@/pages/home";
 import { useEffect } from "react";
 import { initGA } from "./lib/analytics";
 import { useAnalytics } from "./hooks/use-analytics";
+import { Analytics } from '@vercel/analytics/react';
 
 function Router() {
   // Track page views when routes change
   useAnalytics();
-  
   return (
     <Switch>
       <Route path="/" component={Home} />
@@ -36,6 +36,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Router />
+        <Analytics />
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>

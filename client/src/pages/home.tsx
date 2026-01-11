@@ -149,14 +149,14 @@ export default function Home() {
       description: "Perfect for small businesses and personal websites",
       features: [
         "Up to 5 pages",
-        "Mobile responsive design", 
+        "Mobile responsive design",
         "Contact form",
       ],
       popular: false,
       isFree: true,
     },
     {
-      name: "Business Website", 
+      name: "Business Website",
       price: "$399",
       priceValue: "399.00",
       description: "Ideal for growing businesses that need more features",
@@ -730,6 +730,14 @@ export default function Home() {
                     Contact
                   </button>
                 </li>
+                <li>
+                  <Link
+                    href="/convert-pdf-to-markdown"
+                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                  >
+                    PDF to Markdown
+                  </Link>
+                </li>
               </ul>
             </div>
 
@@ -764,13 +772,13 @@ export default function Home() {
               >
                 About
               </button>
-              <Link 
+              <Link
                 href="/terms"
                 className="text-gray-300 hover:text-white text-sm transition-colors duration-200"
               >
                 Terms
               </Link>
-              <Link 
+              <Link
                 href="/privacy"
                 className="text-gray-300 hover:text-white text-sm transition-colors duration-200"
               >

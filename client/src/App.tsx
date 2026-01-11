@@ -7,6 +7,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
+import ConvertPdf from "@/pages/convert-pdf";
 // Analytics library still available for tracking events and page views
 import { useAnalytics } from "./hooks/use-analytics";
 import { Analytics } from '@vercel/analytics/react';
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
+      <Route path="/convert-pdf-to-markdown" component={ConvertPdf} />
       <Route component={NotFound} />
     </Switch>
   );

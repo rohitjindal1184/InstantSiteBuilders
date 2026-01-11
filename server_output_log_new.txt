@@ -1,0 +1,9 @@
+
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+
+PayPal credentials not configured. PayPal features will be disabled.
+[dotenv@17.2.0] injecting env (0) from .env (tip: ⚙️  enable debug logging with { debug: true })
+10:24:39 PM [express] serving on port 5001
+Warning: Indexing all PDF objects
+10:24:53 PM [express] POST /api/convert-pdf 200 in 87ms :: {"success":true,"markdown":{"pages":[{"tex…

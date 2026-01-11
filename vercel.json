@@ -7,14 +7,14 @@
       "maxDuration": 30
     }
   },
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index"
+      "source": "/api/(.*)",
+      "destination": "/api/index"
     },
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/((?!assets|.*\\.).*)",
+      "destination": "/index.html"
     }
   ],
   "env": {

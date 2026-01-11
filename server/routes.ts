@@ -62,11 +62,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const dataBuffer = req.file.buffer;
 
-      // pdf-parse v2 exports PDFParse class - use ESM import
-      const { PDFParse } = await import("pdf-parse");
-      const parser = new PDFParse({ data: dataBuffer });
-      const textResult = await parser.getText();
-      const markdown = textResult.text; // TextResult has a .text property with the actual string
+      // pdf-parse v1.x - import from lib directly to avoid debug mode
+      const pdfParse = (await import("pdf-parse/lib/pdf-parse")).default;
+      const data = await pdfParse(dataBuffer);
+      const markdown = data.text;
 
       res.json({ success: true, markdown });
     } catch (error) {

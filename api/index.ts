@@ -243,13 +243,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const dataBuffer = await parseFile();
         console.log('Buffer size:', dataBuffer.length);
 
-        // Parse PDF using pdf-parse v2
-        const { PDFParse } = await import('pdf-parse');
-        const parser = new PDFParse({ data: dataBuffer });
-        // Note: load() is marked private in types but is a public API method
-        await (parser as any).load();
-        const textResult = await parser.getText();
-        const markdown = textResult.text;
+        // Parse PDF using pdf-parse v1.x - import from lib directly to avoid debug mode
+        const pdfParse = (await import('pdf-parse/lib/pdf-parse')).default;
+        const data = await pdfParse(dataBuffer);
+        const markdown = data.text;
 
         return res.status(200).json({
           success: true,

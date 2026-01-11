@@ -130,6 +130,14 @@ export function Footer() {
                                     HTML to Markdown
                                 </Link>
                             </li>
+                            <li>
+                                <Link
+                                    href="/convert-xml-to-markdown"
+                                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                                >
+                                    XML to Markdown
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 

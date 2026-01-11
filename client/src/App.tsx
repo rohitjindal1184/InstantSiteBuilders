@@ -9,6 +9,7 @@ import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
 import ConvertPdf from "@/pages/convert-pdf";
 import ConvertHtml from "@/pages/convert-html";
+import ConvertXml from "@/pages/convert-xml";
 // Analytics library still available for tracking events and page views
 import { useAnalytics } from "./hooks/use-analytics";
 import { Analytics } from '@vercel/analytics/react';
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/privacy" component={Privacy} />
       <Route path="/convert-pdf-to-markdown" component={ConvertPdf} />
       <Route path="/convert-html-to-markdown" component={ConvertHtml} />
+      <Route path="/convert-xml-to-markdown" component={ConvertXml} />
       <Route component={NotFound} />
     </Switch>
   );

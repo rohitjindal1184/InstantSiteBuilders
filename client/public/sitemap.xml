@@ -68,4 +68,12 @@
     <priority>0.8</priority>
   </url>
   
+  <!-- HTML to Markdown Converter Tool -->
+  <url>
+    <loc>https://instantsitebuilders.com/convert-html-to-markdown</loc>
+    <lastmod>2026-01-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
 </urlset>

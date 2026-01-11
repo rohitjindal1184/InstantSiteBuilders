@@ -744,6 +744,14 @@ export default function Home() {
                     PDF to Markdown
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/convert-html-to-markdown"
+                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                  >
+                    HTML to Markdown
+                  </Link>
+                </li>
               </ul>
             </div>
 

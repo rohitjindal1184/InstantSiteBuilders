@@ -79,6 +79,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // HTML to Markdown Conversion endpoint
+  app.post("/api/convert-html", upload.single("file"), async (req, res) => {
+    try {
+      let htmlContent = '';
+
+      if (req.file) {
+        htmlContent = req.file.buffer.toString('utf-8');
+      } else if (req.body && req.body.html) {
+        htmlContent = req.body.html;
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: 'HTML content or file is required'
+        });
+      }
+
+      if (!req.file && htmlContent.length > 500000) { // 500KB limit for text
+        return res.status(400).json({
+          success: false,
+          message: 'HTML content exceeds 500KB limit'
+        });
+      }
+
+      // Convert HTML to Markdown using turndown
+      const TurndownService = (await import('turndown')).default;
+      const turndownService = new TurndownService({
+        headingStyle: 'atx',
+        codeBlockStyle: 'fenced'
+      });
+      const markdown = turndownService.turndown(htmlContent);
+
+      res.json({ success: true, markdown });
+    } catch (error) {
+      console.error("HTML conversion error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to convert HTML",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   // PayPal Routes
   app.get("/paypal/setup", async (req, res) => {
     await loadPaypalDefault(req, res);

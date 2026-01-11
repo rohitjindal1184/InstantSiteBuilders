@@ -6,7 +6,12 @@ import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./payp
 import { z } from "zod";
 import multer from "multer";
 
-const upload = multer({ storage: multer.memoryStorage() });
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB limit
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_FILE_SIZE }
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Contact form submission endpoint

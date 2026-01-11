@@ -121,6 +121,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/convert-xml", upload.single('file'), async (req, res) => {
+    try {
+      let xmlContent = '';
+
+      if (req.file) {
+        xmlContent = req.file.buffer.toString('utf-8');
+      } else {
+        const { xml } = req.body;
+        if (!xml) {
+          return res.status(400).json({
+            success: false,
+            message: "XML content is required"
+          });
+        }
+        xmlContent = xml;
+      }
+
+      if (xmlContent.length > 500000 && !req.file) {
+        return res.status(400).json({
+          success: false,
+          message: 'XML content exceeds 500KB limit'
+        });
+      }
+
+      // Convert XML to Markdown using turndown
+      const TurndownService = (await import('turndown')).default;
+      const turndownService = new TurndownService({
+        headingStyle: 'atx',
+        codeBlockStyle: 'fenced'
+      });
+      const markdown = turndownService.turndown(xmlContent);
+
+      res.json({ success: true, markdown });
+    } catch (error) {
+      console.error("XML conversion error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to convert XML",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   // PayPal Routes
   app.get("/paypal/setup", async (req, res) => {
     await loadPaypalDefault(req, res);

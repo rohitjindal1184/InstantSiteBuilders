@@ -63,7 +63,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const dataBuffer = req.file.buffer;
 
       // pdf-parse v1.x - import from lib directly to avoid debug mode
-      const pdfParse = (await import("pdf-parse/lib/pdf-parse")).default;
+      const pdfParse = (await import("pdf-parse/lib/pdf-parse.js")).default;
       const data = await pdfParse(dataBuffer);
       const markdown = data.text;
 

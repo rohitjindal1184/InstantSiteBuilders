@@ -244,7 +244,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         console.log('Buffer size:', dataBuffer.length);
 
         // Parse PDF using pdf-parse v1.x - import from lib directly to avoid debug mode
-        const pdfParse = (await import('pdf-parse/lib/pdf-parse')).default;
+        const pdfParse = (await import('pdf-parse/lib/pdf-parse.js')).default;
         const data = await pdfParse(dataBuffer);
         const markdown = data.text;
 

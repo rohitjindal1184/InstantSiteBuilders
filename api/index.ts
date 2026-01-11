@@ -262,6 +262,127 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
+    // HTML to Markdown Conversion endpoint
+    if (pathname === '/convert-html' && req.method === 'POST') {
+      try {
+        console.log('Processing HTML conversion request');
+
+        let htmlContent = '';
+
+        const contentType = req.headers['content-type'] || '';
+        if (contentType.includes('multipart/form-data')) {
+          // Parse multipart form data using busboy
+          const zip = (await import('busboy')).default;
+          // Note: busboy might be exported as default or named export depending on version/bundler
+          // We used 'const Busboy = (await import('busboy')).default;' in PDF section, let's reuse that pattern
+          const Busboy = (await import('busboy')).default;
+
+          const parseFile = (): Promise<Buffer> => {
+            return new Promise((resolve, reject) => {
+              const busboy = Busboy({
+                headers: req.headers,
+                limits: {
+                  fileSize: 2 * 1024 * 1024, // 2MB limit
+                  files: 1
+                }
+              });
+
+              const chunks: Buffer[] = [];
+              let fileFound = false;
+
+              busboy.on('file', (fieldname: string, file: NodeJS.ReadableStream, info: { filename: string; encoding: string; mimeType: string }) => {
+                if (fieldname !== 'file') {
+                  file.resume();
+                  return;
+                }
+
+                fileFound = true;
+                file.on('data', (data: Buffer) => {
+                  if (chunks.reduce((acc, c) => acc + c.length, 0) + data.length > 2 * 1024 * 1024) {
+                    file.resume();
+                    reject(new Error('File size exceeds limit'));
+                    return;
+                  }
+                  chunks.push(data);
+                });
+
+                file.on('end', () => {
+                  console.log('File received, total size:', chunks.reduce((acc, c) => acc + c.length, 0));
+                });
+              });
+
+              busboy.on('finish', () => {
+                if (!fileFound || chunks.length === 0) {
+                  reject(new Error('No file uploaded'));
+                } else {
+                  resolve(Buffer.concat(chunks));
+                }
+              });
+
+              busboy.on('error', (err: Error) => {
+                reject(err);
+              });
+
+              // Pipe the request to busboy
+              // In Vercel, req.body might already be parsed for some content types,
+              // but for multipart it usually isn't unless we disable bodyParser.
+              // However, since we are in a monorepo structure where we might not have full control over next.js config easily here,
+              // we follow the pattern used in the successful PDF implementation:
+              if (req.body && Buffer.isBuffer(req.body)) {
+                busboy.end(req.body);
+              } else if (typeof req.pipe === 'function') {
+                req.pipe(busboy);
+              } else {
+                reject(new Error('Unable to read request body'));
+              }
+            });
+          };
+
+          const fileBuffer = await parseFile();
+          htmlContent = fileBuffer.toString('utf-8');
+
+        } else {
+          // Handle JSON body
+          const { html } = req.body as { html?: string };
+          if (!html || typeof html !== 'string') {
+            return res.status(400).json({
+              success: false,
+              message: 'HTML content is required'
+            });
+          }
+          htmlContent = html;
+        }
+
+        if (htmlContent.length > 500000 && !contentType.includes('multipart/form-data')) { // 500KB limit for text input
+          // Check performed earlier for files inside busboy logic
+          return res.status(400).json({
+            success: false,
+            message: 'HTML content exceeds limit'
+          });
+        }
+
+        // Convert HTML to Markdown using turndown
+        const TurndownService = (await import('turndown')).default;
+        const turndownService = new TurndownService({
+          headingStyle: 'atx',
+          codeBlockStyle: 'fenced'
+        });
+        const markdown = turndownService.turndown(htmlContent);
+
+        return res.status(200).json({
+          success: true,
+          markdown
+        });
+      } catch (error) {
+        console.error('HTML conversion error:', error);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to convert HTML',
+          error: error instanceof Error ? error.message : String(error)
+        });
+      }
+    }
+
     // Default 404 response
     return res.status(404).json({
       success: false,

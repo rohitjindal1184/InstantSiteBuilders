@@ -653,7 +653,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-5 gap-8">
             <div className="md:col-span-2">
               <div className="mb-4">
                 <img
@@ -730,12 +730,26 @@ export default function Home() {
                     Contact
                   </button>
                 </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Convert to Markdown</h4>
+              <ul className="space-y-2">
                 <li>
                   <Link
                     href="/convert-pdf-to-markdown"
                     className="text-gray-300 hover:text-white transition-colors duration-200"
                   >
                     PDF to Markdown
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/convert-html-to-markdown"
+                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                  >
+                    HTML to Markdown
                   </Link>
                 </li>
               </ul>

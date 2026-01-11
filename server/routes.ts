@@ -164,6 +164,166 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/convert-json", upload.single('file'), async (req, res) => {
+    try {
+      let jsonContent = '';
+
+      if (req.file) {
+        jsonContent = req.file.buffer.toString('utf-8');
+      } else {
+        const { json } = req.body;
+        if (!json) {
+          return res.status(400).json({
+            success: false,
+            message: "JSON content is required"
+          });
+        }
+        jsonContent = json;
+      }
+
+      if (jsonContent.length > 500000 && !req.file) {
+        return res.status(400).json({
+          success: false,
+          message: 'JSON content exceeds 500KB limit'
+        });
+      }
+
+      // Parse and Convert JSON to Markdown
+      let parsed: any;
+      try {
+        parsed = JSON.parse(jsonContent);
+      } catch (e) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid JSON format'
+        });
+      }
+
+      let markdown = '';
+
+      if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === 'object' && parsed[0] !== null) {
+        // Convert Array of Objects to Table
+        const keys = Array.from(new Set(parsed.flatMap((item: any) =>
+          (typeof item === 'object' && item !== null) ? Object.keys(item) : []
+        )));
+
+        if (keys.length > 0) {
+          markdown += '| ' + keys.join(' | ') + ' |\n';
+          markdown += '| ' + keys.map(() => '---').join(' | ') + ' |\n';
+          parsed.forEach((item: any) => {
+            const row = keys.map(k => {
+              const val = item?.[k];
+              if (val === null || val === undefined) return '';
+              if (typeof val === 'object') return JSON.stringify(val);
+              return String(val).replace(/\|/g, '\\|');
+            });
+            markdown += '| ' + row.join(' | ') + ' |\n';
+          });
+        } else {
+          markdown = '```json\n' + JSON.stringify(parsed, null, 2) + '\n```';
+        }
+      } else {
+        // Logic for Objects or Mixed Content -> Nested List
+        const toMarkdown = (obj: any, depth = 0): string => {
+          const indent = '  '.repeat(depth);
+          let res = '';
+
+          if (Array.isArray(obj)) {
+            obj.forEach((item, index) => {
+              if (typeof item === 'object' && item !== null) {
+                res += `${indent}- Item ${index + 1}:\n${toMarkdown(item, depth + 1)}`;
+              } else {
+                res += `${indent}- ${item}\n`;
+              }
+            });
+          } else if (typeof obj === 'object' && obj !== null) {
+            for (const [key, val] of Object.entries(obj)) {
+              res += `${indent}- **${key}**: `;
+              if (typeof val === 'object' && val !== null) {
+                res += `\n${toMarkdown(val, depth + 1)}`;
+              } else {
+                res += `${val}\n`;
+              }
+            }
+          } else {
+            res += `${indent}${obj}\n`;
+          }
+          return res;
+        };
+        markdown = toMarkdown(parsed);
+      }
+
+      res.json({ success: true, markdown });
+    } catch (error) {
+      console.error("JSON conversion error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to convert JSON",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
+  app.post("/api/convert-rtf", upload.single('file'), async (req, res) => {
+    try {
+      let rtfContent = '';
+
+      if (req.file) {
+        rtfContent = req.file.buffer.toString('utf-8');
+      } else {
+        const { rtf } = req.body;
+        if (!rtf) {
+          return res.status(400).json({
+            success: false,
+            message: "RTF content is required"
+          });
+        }
+        rtfContent = rtf;
+      }
+
+      if (rtfContent.length > 2 * 1024 * 1024 && !req.file) {
+        return res.status(400).json({
+          success: false,
+          message: 'RTF content exceeds 2MB limit'
+        });
+      }
+
+      // Convert RTF to HTML first
+      const rtfToHTML = await import('@iarna/rtf-to-html');
+      // Handle ESM/CommonJS import structure
+      // @ts-ignore
+      const fromString = rtfToHTML.fromString || rtfToHTML.default?.fromString || rtfToHTML.default;
+
+      if (typeof fromString !== 'function') {
+        throw new Error("Failed to load RTF converter");
+      }
+
+      const html = await new Promise<string>((resolve, reject) => {
+        fromString(rtfContent, (err: any, html: string) => {
+          if (err) reject(err);
+          else resolve(html);
+        });
+      });
+
+      // Convert HTML to Markdown using turndown
+      const TurndownService = (await import('turndown')).default;
+      const turndownService = new TurndownService({
+        headingStyle: 'atx',
+        codeBlockStyle: 'fenced'
+      });
+      const markdown = turndownService.turndown(html);
+
+      res.json({ success: true, markdown });
+    } catch (error) {
+      console.error("RTF conversion error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to convert RTF",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   // PayPal Routes
   app.get("/paypal/setup", async (req, res) => {
     await loadPaypalDefault(req, res);

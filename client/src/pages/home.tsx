@@ -43,6 +43,8 @@ import {
   Instagram,
 } from "lucide-react";
 
+import { Helmet } from "react-helmet-async";
+
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toast } = useToast();
@@ -98,14 +100,13 @@ export default function Home() {
     const handleScroll = () => {
       const header = document.querySelector("nav");
       if (header) {
-        if (window.scrollY > 100) {
-          header.classList.add("shadow-lg");
+        if (window.scrollY > 10) {
+          header.classList.add("shadow-md", "bg-white/95");
         } else {
-          header.classList.remove("shadow-lg");
+          header.classList.remove("shadow-md", "bg-white/95");
         }
       }
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);

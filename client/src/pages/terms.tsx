@@ -2,12 +2,18 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
 import logoPath from "@assets/logo.png";
+import { Helmet } from "react-helmet-async";
 
 export default function Terms() {
   const [, navigate] = useLocation();
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Helmet>
+        <title>Terms of Use | InstantSiteBuilders</title>
+        <meta name="description" content="Terms of Use for InstantSiteBuilders. Read about our service terms, user responsibilities, and legal agreements." />
+        <link rel="canonical" href="https://instantsitebuilders.com/terms" />
+      </Helmet>
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">

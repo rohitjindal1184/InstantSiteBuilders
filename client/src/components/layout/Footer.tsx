@@ -146,6 +146,14 @@ export function Footer() {
                                     JSON to Markdown
                                 </Link>
                             </li>
+                            <li>
+                                <Link
+                                    href="/convert-rtf-to-markdown"
+                                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                                >
+                                    RTF to Markdown
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 

@@ -264,6 +264,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/convert-rtf", upload.single('file'), async (req, res) => {
+    try {
+      let rtfContent = '';
+
+      if (req.file) {
+        rtfContent = req.file.buffer.toString('utf-8');
+      } else {
+        const { rtf } = req.body;
+        if (!rtf) {
+          return res.status(400).json({
+            success: false,
+            message: "RTF content is required"
+          });
+        }
+        rtfContent = rtf;
+      }
+
+      if (rtfContent.length > 2 * 1024 * 1024 && !req.file) {
+        return res.status(400).json({
+          success: false,
+          message: 'RTF content exceeds 2MB limit'
+        });
+      }
+
+      // Convert RTF to HTML first
+      const rtfToHTML = await import('@iarna/rtf-to-html');
+      // Handle ESM/CommonJS import structure
+      // @ts-ignore
+      const fromString = rtfToHTML.fromString || rtfToHTML.default?.fromString || rtfToHTML.default;
+
+      if (typeof fromString !== 'function') {
+        throw new Error("Failed to load RTF converter");
+      }
+
+      const html = await new Promise<string>((resolve, reject) => {
+        fromString(rtfContent, (err: any, html: string) => {
+          if (err) reject(err);
+          else resolve(html);
+        });
+      });
+
+      // Convert HTML to Markdown using turndown
+      const TurndownService = (await import('turndown')).default;
+      const turndownService = new TurndownService({
+        headingStyle: 'atx',
+        codeBlockStyle: 'fenced'
+      });
+      const markdown = turndownService.turndown(html);
+
+      res.json({ success: true, markdown });
+    } catch (error) {
+      console.error("RTF conversion error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to convert RTF",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   // PayPal Routes
   app.get("/paypal/setup", async (req, res) => {
     await loadPaypalDefault(req, res);

@@ -5,10 +5,6 @@ import { sendContactNotification } from "./email";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { z } from "zod";
 import multer from "multer";
-// @ts-ignore
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const pdf = require("pdf-parse");
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -60,14 +56,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const dataBuffer = req.file.buffer;
-      const uint8Array = new Uint8Array(dataBuffer);
 
-      // @ts-ignore
-      const { PDFParse } = pdf;
-      const parser = new PDFParse(uint8Array);
-      const text = await parser.getText();
-
-      const markdown = text;
+      // pdf-parse v2 exports PDFParse class - use ESM import
+      const { PDFParse } = await import("pdf-parse");
+      const parser = new PDFParse({ data: dataBuffer });
+      const textResult = await parser.getText();
+      const markdown = textResult.text; // TextResult has a .text property with the actual string
 
       res.json({ success: true, markdown });
     } catch (error) {

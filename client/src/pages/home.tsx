@@ -216,6 +216,17 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gray-50">
+      <Helmet>
+        <title>Instant Website Builder | Free & Fast Website Builder for Small Business</title>
+        <meta
+          name="description"
+          content="Build your website online free with our instant website builder. Fast, SEO-friendly, and perfect for small businesses. No-code website builder with professional results in 48 hours."
+        />
+        <meta
+          name="keywords"
+          content="instant website builder, free website builder, website builder for small business, SEO-friendly website builder, build website online free, website builder with SEO tools, no-code website builder, fast website builder"
+        />
+      </Helmet>
       {/* Navigation */}
       <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50 transition-shadow duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

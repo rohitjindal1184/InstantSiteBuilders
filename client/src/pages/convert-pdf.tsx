@@ -47,16 +47,26 @@ export default function ConvertPdf() {
 
     const mutation = useMutation({
         mutationFn: async (uploadFile: File) => {
+            // Check file size on client side first
+            const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+            if (uploadFile.size > MAX_SIZE) {
+                throw new Error("File size exceeds 2MB limit. Please upload a smaller file.");
+            }
+
             const formData = new FormData();
             formData.append("file", uploadFile);
             const res = await fetch("/api/convert-pdf", {
                 method: "POST",
                 body: formData,
             });
+
+            const data = await res.json();
+
             if (!res.ok) {
-                throw new Error("Failed to convert");
+                // Use the server's error message if available
+                throw new Error(data.message || data.error || "Failed to convert PDF");
             }
-            return res.json();
+            return data;
         },
         onSuccess: (data) => {
             setMarkdown(data.markdown);

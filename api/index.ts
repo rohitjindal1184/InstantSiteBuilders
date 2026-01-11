@@ -174,8 +174,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       try {
         console.log('Processing PDF conversion request');
 
-        // Vercel handles body parsing - check if file data is in the body
-        // For multipart form data, we need to use a different approach
         const contentType = req.headers['content-type'] || '';
 
         if (!contentType.includes('multipart/form-data')) {
@@ -185,43 +183,71 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           });
         }
 
-        // Parse multipart form data manually for Vercel
-        const { IncomingForm } = await import('formidable');
-        const form = new IncomingForm({
-          maxFileSize: 2 * 1024 * 1024, // 2MB limit
-        });
+        // Parse multipart form data using busboy (streams to memory, Vercel-friendly)
+        const Busboy = (await import('busboy')).default;
+        const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB limit
 
-        const parseForm = (): Promise<{ fields: any; files: any }> => {
+        const parseFile = (): Promise<Buffer> => {
           return new Promise((resolve, reject) => {
-            form.parse(req as any, (err, fields, files) => {
-              if (err) reject(err);
-              else resolve({ fields, files });
+            const busboy = Busboy({
+              headers: req.headers as any,
+              limits: { fileSize: MAX_FILE_SIZE }
             });
+            const chunks: Buffer[] = [];
+            let fileFound = false;
+            let totalSize = 0;
+
+            busboy.on('file', (fieldname: string, file: NodeJS.ReadableStream, info: { filename: string; encoding: string; mimeType: string }) => {
+              console.log('Receiving file:', info.filename, 'mimetype:', info.mimeType);
+              fileFound = true;
+
+              file.on('data', (data: Buffer) => {
+                totalSize += data.length;
+                if (totalSize > MAX_FILE_SIZE) {
+                  file.resume(); // Drain the stream
+                  reject(new Error('File size exceeds 2MB limit'));
+                  return;
+                }
+                chunks.push(data);
+              });
+
+              file.on('end', () => {
+                console.log('File received, total size:', chunks.reduce((acc, c) => acc + c.length, 0));
+              });
+            });
+
+            busboy.on('finish', () => {
+              if (!fileFound || chunks.length === 0) {
+                reject(new Error('No file uploaded'));
+              } else {
+                resolve(Buffer.concat(chunks));
+              }
+            });
+
+            busboy.on('error', (err: Error) => {
+              reject(err);
+            });
+
+            // Pipe the request to busboy
+            if (req.body && Buffer.isBuffer(req.body)) {
+              // Vercel might have already parsed the body as a buffer
+              busboy.end(req.body);
+            } else if (typeof req.pipe === 'function') {
+              req.pipe(busboy);
+            } else {
+              reject(new Error('Unable to read request body'));
+            }
           });
         };
 
-        const { files } = await parseForm();
-        const uploadedFile = files.file?.[0] || files.file;
-
-        if (!uploadedFile) {
-          return res.status(400).json({
-            success: false,
-            message: 'No file uploaded'
-          });
-        }
-
-        // Read the file buffer
-        const fs = await import('fs');
-        const dataBuffer = await fs.promises.readFile(uploadedFile.filepath);
+        const dataBuffer = await parseFile();
+        console.log('Buffer size:', dataBuffer.length);
 
         // Parse PDF using pdf-parse v2
         const { PDFParse } = await import('pdf-parse');
         const parser = new PDFParse({ data: dataBuffer });
         const textResult = await parser.getText();
         const markdown = textResult.text;
-
-        // Clean up temp file
-        await fs.promises.unlink(uploadedFile.filepath).catch(() => { });
 
         return res.status(200).json({
           success: true,

@@ -39,7 +39,7 @@ async function sendContactNotification(submission: any): Promise<boolean> {
       console.log('Email transporter not configured - skipping email');
       return true; // Don't fail the request if email isn't configured
     }
-    
+
     console.log('Sending email notification...');
     const now = new Date().toLocaleString();
 
@@ -111,7 +111,7 @@ This email was sent from your InstantSiteBuilders contact form.`
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   console.log('API Request:', req.method, req.url);
-  
+
   try {
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -133,35 +133,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         console.log('Processing contact form submission:', req.body);
         const validatedData = insertContactSubmissionSchema.parse(req.body);
         console.log('Data validated successfully:', validatedData);
-        
+
         // Send email notification directly
         try {
           await sendContactNotification(validatedData);
           console.log('Email notification sent successfully');
-          
-          return res.status(201).json({ 
-            success: true, 
+
+          return res.status(201).json({
+            success: true,
             message: "Thank you for your message! We'll get back to you within 24 hours."
           });
         } catch (emailError) {
           console.error('Failed to send email notification:', emailError);
-          
-          return res.status(500).json({ 
-            success: false, 
+
+          return res.status(500).json({
+            success: false,
             message: "Failed to send your message. Please try again."
           });
         }
       } catch (error) {
         if (error instanceof z.ZodError) {
-          return res.status(400).json({ 
-            success: false, 
+          return res.status(400).json({
+            success: false,
             message: "Please check your form data",
-            errors: error.errors 
+            errors: error.errors
           });
         } else {
           console.error('Contact form error:', error);
-          return res.status(500).json({ 
-            success: false, 
+          return res.status(500).json({
+            success: false,
             message: "An error occurred while processing your request",
             error: error instanceof Error ? error.message : 'Unknown error'
           });
@@ -169,18 +169,84 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
+    // PDF Conversion endpoint
+    if (pathname === '/convert-pdf' && req.method === 'POST') {
+      try {
+        console.log('Processing PDF conversion request');
 
+        // Vercel handles body parsing - check if file data is in the body
+        // For multipart form data, we need to use a different approach
+        const contentType = req.headers['content-type'] || '';
+
+        if (!contentType.includes('multipart/form-data')) {
+          return res.status(400).json({
+            success: false,
+            message: 'Content-Type must be multipart/form-data'
+          });
+        }
+
+        // Parse multipart form data manually for Vercel
+        const { IncomingForm } = await import('formidable');
+        const form = new IncomingForm({
+          maxFileSize: 2 * 1024 * 1024, // 2MB limit
+        });
+
+        const parseForm = (): Promise<{ fields: any; files: any }> => {
+          return new Promise((resolve, reject) => {
+            form.parse(req as any, (err, fields, files) => {
+              if (err) reject(err);
+              else resolve({ fields, files });
+            });
+          });
+        };
+
+        const { files } = await parseForm();
+        const uploadedFile = files.file?.[0] || files.file;
+
+        if (!uploadedFile) {
+          return res.status(400).json({
+            success: false,
+            message: 'No file uploaded'
+          });
+        }
+
+        // Read the file buffer
+        const fs = await import('fs');
+        const dataBuffer = await fs.promises.readFile(uploadedFile.filepath);
+
+        // Parse PDF using pdf-parse v2
+        const { PDFParse } = await import('pdf-parse');
+        const parser = new PDFParse({ data: dataBuffer });
+        const textResult = await parser.getText();
+        const markdown = textResult.text;
+
+        // Clean up temp file
+        await fs.promises.unlink(uploadedFile.filepath).catch(() => { });
+
+        return res.status(200).json({
+          success: true,
+          markdown
+        });
+      } catch (error) {
+        console.error('PDF conversion error:', error);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to convert PDF',
+          error: error instanceof Error ? error.message : String(error)
+        });
+      }
+    }
 
     // Default 404 response
-    return res.status(404).json({ 
-      success: false, 
-      message: "API endpoint not found" 
+    return res.status(404).json({
+      success: false,
+      message: "API endpoint not found"
     });
 
   } catch (error) {
     console.error('API handler error:', error);
-    return res.status(500).json({ 
-      success: false, 
+    return res.status(500).json({
+      success: false,
       message: "Internal server error",
       error: error instanceof Error ? error.message : 'Unknown error'
     });

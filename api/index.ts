@@ -497,6 +497,181 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
+    // JSON to Markdown Conversion endpoint
+    if (pathname === '/convert-json' && req.method === 'POST') {
+      try {
+        console.log('Processing JSON conversion request');
+
+        let jsonContent = '';
+
+        const contentType = req.headers['content-type'] || '';
+        if (contentType.includes('multipart/form-data')) {
+          // Parse multipart form data using busboy
+          const zip = (await import('busboy')).default;
+          const Busboy = (await import('busboy')).default;
+
+          const parseFile = (): Promise<Buffer> => {
+            return new Promise((resolve, reject) => {
+              const busboy = Busboy({
+                headers: req.headers,
+                limits: {
+                  fileSize: 2 * 1024 * 1024, // 2MB limit
+                  files: 1
+                }
+              });
+
+              const chunks: Buffer[] = [];
+              let fileFound = false;
+
+              busboy.on('file', (fieldname: string, file: NodeJS.ReadableStream, info: { filename: string; encoding: string; mimeType: string }) => {
+                if (fieldname !== 'file') {
+                  file.resume();
+                  return;
+                }
+
+                fileFound = true;
+                file.on('data', (data: Buffer) => {
+                  if (chunks.reduce((acc, c) => acc + c.length, 0) + data.length > 2 * 1024 * 1024) {
+                    file.resume();
+                    reject(new Error('File size exceeds limit'));
+                    return;
+                  }
+                  chunks.push(data);
+                });
+
+                file.on('end', () => {
+                  console.log('File received, total size:', chunks.reduce((acc, c) => acc + c.length, 0));
+                });
+              });
+
+              busboy.on('finish', () => {
+                if (!fileFound || chunks.length === 0) {
+                  reject(new Error('No file uploaded'));
+                } else {
+                  resolve(Buffer.concat(chunks));
+                }
+              });
+
+              busboy.on('error', (err: Error) => {
+                reject(err);
+              });
+
+              if (req.body && Buffer.isBuffer(req.body)) {
+                busboy.end(req.body);
+              } else if (typeof req.pipe === 'function') {
+                req.pipe(busboy);
+              } else {
+                reject(new Error('Unable to read request body'));
+              }
+            });
+          };
+
+          const fileBuffer = await parseFile();
+          jsonContent = fileBuffer.toString('utf-8');
+
+        } else {
+          // Handle JSON body
+          const { json } = req.body as { json?: string };
+          if (!json || typeof json !== 'string') {
+            return res.status(400).json({
+              success: false,
+              message: 'JSON content is required'
+            });
+          }
+          jsonContent = json;
+        }
+
+        if (jsonContent.length > 500000 && !contentType.includes('multipart/form-data')) {
+          return res.status(400).json({
+            success: false,
+            message: 'JSON content exceeds limit'
+          });
+        }
+
+        // Parse and Convert JSON to Markdown
+        let parsed: any;
+        try {
+          parsed = JSON.parse(jsonContent);
+        } catch (e) {
+          return res.status(400).json({
+            success: false,
+            message: 'Invalid JSON format'
+          });
+        }
+
+        let markdown = '';
+
+        if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === 'object' && parsed[0] !== null) {
+          // Convert Array of Objects to Table
+          // Get all unique keys from all objects
+          const keys = Array.from(new Set(parsed.flatMap((item: any) =>
+            (typeof item === 'object' && item !== null) ? Object.keys(item) : []
+          )));
+
+          if (keys.length > 0) {
+            // Header
+            markdown += '| ' + keys.join(' | ') + ' |\n';
+            // Separator
+            markdown += '| ' + keys.map(() => '---').join(' | ') + ' |\n';
+            // Rows
+            parsed.forEach((item: any) => {
+              const row = keys.map(k => {
+                const val = item?.[k];
+                if (val === null || val === undefined) return '';
+                if (typeof val === 'object') return JSON.stringify(val);
+                return String(val).replace(/\|/g, '\\|'); // Escape pipes
+              });
+              markdown += '| ' + row.join(' | ') + ' |\n';
+            });
+          } else {
+            // Array of empty objects or something weird
+            markdown = '```json\n' + JSON.stringify(parsed, null, 2) + '\n```';
+          }
+        } else {
+          // Logic for Objects or Mixed Content -> Nested List
+          const toMarkdown = (obj: any, depth = 0): string => {
+            const indent = '  '.repeat(depth);
+            let res = '';
+
+            if (Array.isArray(obj)) {
+              obj.forEach((item, index) => {
+                if (typeof item === 'object' && item !== null) {
+                  res += `${indent}- Item ${index + 1}:\n${toMarkdown(item, depth + 1)}`;
+                } else {
+                  res += `${indent}- ${item}\n`;
+                }
+              });
+            } else if (typeof obj === 'object' && obj !== null) {
+              for (const [key, val] of Object.entries(obj)) {
+                res += `${indent}- **${key}**: `;
+                if (typeof val === 'object' && val !== null) {
+                  res += `\n${toMarkdown(val, depth + 1)}`;
+                } else {
+                  res += `${val}\n`;
+                }
+              }
+            } else {
+              res += `${indent}${obj}\n`;
+            }
+            return res;
+          };
+          markdown = toMarkdown(parsed);
+        }
+
+        return res.status(200).json({
+          success: true,
+          markdown
+        });
+      } catch (error) {
+        console.error('JSON conversion error:', error);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to convert JSON',
+          error: error instanceof Error ? error.message : String(error)
+        });
+      }
+    }
+
     // Default 404 response
     return res.status(404).json({
       success: false,

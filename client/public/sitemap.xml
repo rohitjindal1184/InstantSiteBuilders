@@ -76,4 +76,20 @@
     <priority>0.8</priority>
   </url>
   
+  <!-- XML to Markdown Converter Tool -->
+  <url>
+    <loc>https://instantsitebuilders.com/convert-xml-to-markdown</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- JSON to Markdown Converter Tool -->
+  <url>
+    <loc>https://instantsitebuilders.com/convert-json-to-markdown</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
 </urlset>

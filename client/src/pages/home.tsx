@@ -788,6 +788,14 @@ export default function Home() {
                     RTF to Markdown
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/convert-webpage-to-markdown"
+                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                  >
+                    Webpage to Markdown
+                  </Link>
+                </li>
               </ul>
             </div>
 

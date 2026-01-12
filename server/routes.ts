@@ -393,6 +393,215 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/validate-sitemap", async (req, res) => {
+    try {
+      const { url } = req.body;
+      if (!url) {
+        return res.status(400).json({
+          success: false,
+          message: "URL is required"
+        });
+      }
+
+      // Basic URL validation
+      try {
+        const parsedUrl = new URL(url);
+        if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+          return res.status(400).json({
+            success: false,
+            message: "Only http and https protocols are supported"
+          });
+        }
+      } catch (e) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid URL provided"
+        });
+      }
+
+      // Fetch the URL content
+      const response = await fetch(url);
+      if (!response.ok) {
+        return res.status(400).json({
+          success: false,
+          message: `Failed to fetch URL: ${response.statusText}`
+        });
+      }
+
+      const xmlContent = await response.text();
+
+      // Parse XML
+      const jsdom = (await import("jsdom")).default;
+      const { JSDOM } = jsdom;
+      const dom = new JSDOM(xmlContent, { contentType: "text/xml" });
+      const doc = dom.window.document;
+
+      const errors: string[] = [];
+      let urlCount = 0;
+      let valid = true;
+
+      const urlset = doc.querySelector("urlset");
+      const sitemapindex = doc.querySelector("sitemapindex");
+
+      if (!urlset && !sitemapindex) {
+        errors.push("Root element must be <urlset> or <sitemapindex>");
+        valid = false;
+      }
+
+      if (urlset) {
+        const urls = doc.querySelectorAll("url");
+        urlCount = urls.length;
+        if (urlCount === 0) {
+          errors.push("No <url> elements found in <urlset>");
+          valid = false; // Is empty valid? Probably warn at least.
+        }
+      } else if (sitemapindex) {
+        const sitemaps = doc.querySelectorAll("sitemap");
+        urlCount = sitemaps.length;
+        if (urlCount === 0) {
+          errors.push("No <sitemap> elements found in <sitemapindex>");
+          valid = false;
+        }
+      }
+
+      // Basic syntax check implied by parsing, but we can check for parse errors if JSDOM exposes them 
+      // JSDOM's parsing is usually lenient. We rely on the structure check above.
+
+      if (doc.querySelector("parsererror")) {
+        errors.push("XML parsing error. content is not valid XML.");
+        valid = false;
+      }
+
+      res.json({ success: true, valid, urlCount, errors });
+
+    } catch (error) {
+      console.error("Sitemap validation error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to validate sitemap",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
+  app.post("/api/generate-sitemap", async (req, res) => {
+    try {
+      const { type, input, frequency, priority } = req.body;
+      const urls: string[] = [];
+
+      if (type === 'text') {
+        if (!input) {
+          return res.status(400).json({ success: false, message: "No URLs provided" });
+        }
+        // Split by newlines and filter empty
+        const rawUrls = input.split('\n').map((u: string) => u.trim()).filter((u: string) => u.length > 0);
+
+        // Basic validation
+        for (const url of rawUrls) {
+          try {
+            new URL(url);
+            urls.push(url);
+          } catch (e) {
+            // skip invalid urls or throw error? Let's skip.
+          }
+        }
+
+        if (urls.length === 0) {
+          return res.status(400).json({ success: false, message: "No valid URLs found" });
+        }
+
+      } else if (type === 'url') {
+        if (!input) {
+          return res.status(400).json({ success: false, message: "No Homepage URL provided" });
+        }
+
+        try {
+          const baseUrl = new URL(input);
+          if (!['http:', 'https:'].includes(baseUrl.protocol)) {
+            return res.status(400).json({ success: false, message: "Invalid protocol" });
+          }
+
+          // Shallow scan (same domain only)
+          const response = await fetch(input);
+          if (!response.ok) throw new Error("Failed to fetch page");
+
+          const html = await response.text();
+
+          const jsdom = (await import("jsdom")).default;
+          const { JSDOM } = jsdom;
+          const dom = new JSDOM(html);
+          const doc = dom.window.document;
+          const anchors = doc.querySelectorAll('a');
+
+          const uniqueUrls = new Set<string>();
+          uniqueUrls.add(baseUrl.href); // Add homepage
+
+          anchors.forEach(a => {
+            try {
+              const href = a.href;
+              if (!href) return;
+
+              // Resolve relative URLs
+              const resolvedUrl = new URL(href, baseUrl.href);
+
+              // Only include same origin
+              if (resolvedUrl.origin === baseUrl.origin) {
+                // Remove hash
+                resolvedUrl.hash = '';
+                uniqueUrls.add(resolvedUrl.href);
+              }
+            } catch (e) {
+              // ignore invalid
+            }
+          });
+
+          // Limit to 100 for safety
+          Array.from(uniqueUrls).slice(0, 100).forEach(u => urls.push(u));
+
+        } catch (error) {
+          return res.status(400).json({
+            success: false,
+            message: "Failed to scan website",
+            error: error instanceof Error ? error.message : String(error)
+          });
+        }
+      } else {
+        return res.status(400).json({ success: false, message: "Invalid type" });
+      }
+
+      // Generate XML
+      let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+      xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+
+      const today = new Date().toISOString().split('T')[0];
+
+      urls.forEach(url => {
+        xml += '  <url>\n';
+        xml += `    <loc>${url}</loc>\n`;
+        xml += `    <lastmod>${today}</lastmod>\n`;
+        if (frequency && frequency !== 'never') {
+          xml += `    <changefreq>${frequency}</changefreq>\n`;
+        }
+        if (priority) {
+          xml += `    <priority>${priority}</priority>\n`;
+        }
+        xml += '  </url>\n';
+      });
+
+      xml += '</urlset>';
+
+      res.json({ success: true, xml, count: urls.length });
+
+    } catch (error) {
+      console.error("Sitemap generation error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to generate sitemap",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   // PayPal Routes
   app.get("/paypal/setup", async (req, res) => {
     await loadPaypalDefault(req, res);

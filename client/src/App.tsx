@@ -13,6 +13,8 @@ import ConvertXml from "@/pages/convert-xml";
 import ConvertJson from "@/pages/convert-json";
 import ConvertRtf from "@/pages/convert-rtf";
 import ConvertUrl from "@/pages/convert-url";
+import SitemapValidator from "@/pages/sitemap-validator";
+import SitemapGenerator from "@/pages/sitemap-generator";
 // Analytics library still available for tracking events and page views
 import { useAnalytics } from "./hooks/use-analytics";
 import { Analytics } from '@vercel/analytics/react';
@@ -31,6 +33,8 @@ function Router() {
       <Route path="/convert-json-to-markdown" component={ConvertJson} />
       <Route path="/convert-rtf-to-markdown" component={ConvertRtf} />
       <Route path="/convert-webpage-to-markdown" component={ConvertUrl} />
+      <Route path="/sitemap-validator" component={SitemapValidator} />
+      <Route path="/sitemap-generator" component={SitemapGenerator} />
       <Route component={NotFound} />
     </Switch>
   );

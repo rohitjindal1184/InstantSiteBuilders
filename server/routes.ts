@@ -5,6 +5,12 @@ import { sendContactNotification } from "./email";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { z } from "zod";
 import multer from "multer";
+import OpenAI from "openai";
+
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY || 'mock-key', // Fallback for build time
+});
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB limit
 
@@ -597,6 +603,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({
         success: false,
         message: "Failed to generate sitemap",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
+  // AI Reply Generator Endpoint
+  app.post("/api/generate-reply", async (req, res) => {
+    try {
+      if (!process.env.OPENAI_API_KEY) {
+        return res.status(500).json({
+          success: false,
+          message: "OpenAI API key is not configured on the server."
+        });
+      }
+
+      const { message, instructions, context, source, language, style, length } = req.body;
+
+      if (!message || !instructions) {
+        return res.status(400).json({
+          success: false,
+          message: "Message and instructions are required"
+        });
+      }
+
+      const prompt = `
+        You are an expert ${language || 'English'} communication assistant.
+        Please write a ${length || 'medium length'} ${style || 'professional'} reply to the following message from a source type of "${source || 'Email'}".
+
+        INCOMING MESSAGE:
+        "${message}"
+
+        INSTRUCTIONS FOR REPLY:
+        ${instructions}
+
+        ${context ? `ADDITIONAL CONTEXT:\n${context}` : ''}
+
+        Return only the reply text, no other conversation.
+      `;
+
+      const completion = await openai.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: "gpt-4o",
+      });
+
+      const reply = completion.choices[0].message.content;
+
+      res.json({ success: true, reply });
+
+    } catch (error) {
+      console.error("AI Reply generation error:", error);
+      // Handle 503 specifically? Or just general 500
+      res.status(500).json({
+        success: false,
+        message: "Failed to generate reply",
         error: error instanceof Error ? error.message : String(error)
       });
     }

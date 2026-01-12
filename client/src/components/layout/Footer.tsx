@@ -184,6 +184,14 @@ export function Footer() {
                                     Email Signature Generator
                                 </Link>
                             </li>
+                            <li>
+                                <Link
+                                    href="/ai-reply-generator"
+                                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                                >
+                                    AI Reply Generator
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 

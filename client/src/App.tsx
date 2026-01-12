@@ -17,6 +17,7 @@ import SitemapValidator from "@/pages/sitemap-validator";
 import SitemapGenerator from "@/pages/sitemap-generator";
 import SitemapExtractor from "@/pages/sitemap-extractor";
 import EmailSignatureGenerator from "@/pages/email-signature-generator";
+import AiReplyGenerator from "@/pages/ai-reply-generator";
 // Analytics library still available for tracking events and page views
 import { useAnalytics } from "./hooks/use-analytics";
 import { Analytics } from '@vercel/analytics/react';
@@ -39,6 +40,7 @@ function Router() {
       <Route path="/sitemap-generator" component={SitemapGenerator} />
       <Route path="/sitemap-extractor" component={SitemapExtractor} />
       <Route path="/email-signature-generator" component={EmailSignatureGenerator} />
+      <Route path="/ai-reply-generator" component={AiReplyGenerator} />
       <Route component={NotFound} />
     </Switch>
   );

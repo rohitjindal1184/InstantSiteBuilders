@@ -168,6 +168,14 @@ export function Footer() {
                     <div>
                         <h4 className="text-lg font-semibold mb-4">Other Tools</h4>
                         <ul className="space-y-2">
+                            <li>
+                                <Link
+                                    href="/sitemap-validator"
+                                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                                >
+                                    Sitemap Validator
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 

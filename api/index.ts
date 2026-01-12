@@ -803,6 +803,96 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
+    // Sitemap Validator endpoint
+    if (pathname === '/validate-sitemap' && req.method === 'POST') {
+      try {
+        console.log('Processing Sitemap validation request');
+        const { url } = req.body;
+        if (!url) {
+          return res.status(400).json({
+            success: false,
+            message: "URL is required"
+          });
+        }
+
+        // Basic URL validation
+        try {
+          const parsedUrl = new URL(url);
+          if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+            return res.status(400).json({
+              success: false,
+              message: "Only http and https protocols are supported"
+            });
+          }
+        } catch (e) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid URL provided"
+          });
+        }
+
+        // Fetch the URL content
+        const response = await fetch(url);
+        if (!response.ok) {
+          return res.status(400).json({
+            success: false,
+            message: `Failed to fetch URL: ${response.statusText}`
+          });
+        }
+
+        const xmlContent = await response.text();
+
+        // Parse XML
+        const jsdom = (await import("jsdom")).default;
+        const { JSDOM } = jsdom;
+        const dom = new JSDOM(xmlContent, { contentType: "text/xml" });
+        const doc = dom.window.document;
+
+        const errors: string[] = [];
+        let urlCount = 0;
+        let valid = true;
+
+        const urlset = doc.querySelector("urlset");
+        const sitemapindex = doc.querySelector("sitemapindex");
+
+        if (!urlset && !sitemapindex) {
+          errors.push("Root element must be <urlset> or <sitemapindex>");
+          valid = false;
+        }
+
+        if (urlset) {
+          const urls = doc.querySelectorAll("url");
+          urlCount = urls.length;
+          if (urlCount === 0) {
+            errors.push("No <url> elements found in <urlset>");
+            valid = false;
+          }
+        } else if (sitemapindex) {
+          const sitemaps = doc.querySelectorAll("sitemap");
+          urlCount = sitemaps.length;
+          if (urlCount === 0) {
+            errors.push("No <sitemap> elements found in <sitemapindex>");
+            valid = false;
+          }
+        }
+
+        if (doc.querySelector("parsererror")) {
+          errors.push("XML parsing error. content is not valid XML.");
+          valid = false;
+        }
+
+        return res.status(200).json({ success: true, valid, urlCount, errors });
+
+      } catch (error) {
+        console.error("Sitemap validation error:", error);
+        return res.status(500).json({
+          success: false,
+          message: "Failed to validate sitemap",
+          error: error instanceof Error ? error.message : String(error)
+        });
+      }
+    }
+
     // URL to Markdown Conversion endpoint
     if (pathname === '/convert-url' && req.method === 'POST') {
       try {

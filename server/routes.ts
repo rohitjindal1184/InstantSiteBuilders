@@ -393,6 +393,97 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/validate-sitemap", async (req, res) => {
+    try {
+      const { url } = req.body;
+      if (!url) {
+        return res.status(400).json({
+          success: false,
+          message: "URL is required"
+        });
+      }
+
+      // Basic URL validation
+      try {
+        const parsedUrl = new URL(url);
+        if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+          return res.status(400).json({
+            success: false,
+            message: "Only http and https protocols are supported"
+          });
+        }
+      } catch (e) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid URL provided"
+        });
+      }
+
+      // Fetch the URL content
+      const response = await fetch(url);
+      if (!response.ok) {
+        return res.status(400).json({
+          success: false,
+          message: `Failed to fetch URL: ${response.statusText}`
+        });
+      }
+
+      const xmlContent = await response.text();
+
+      // Parse XML
+      const jsdom = (await import("jsdom")).default;
+      const { JSDOM } = jsdom;
+      const dom = new JSDOM(xmlContent, { contentType: "text/xml" });
+      const doc = dom.window.document;
+
+      const errors: string[] = [];
+      let urlCount = 0;
+      let valid = true;
+
+      const urlset = doc.querySelector("urlset");
+      const sitemapindex = doc.querySelector("sitemapindex");
+
+      if (!urlset && !sitemapindex) {
+        errors.push("Root element must be <urlset> or <sitemapindex>");
+        valid = false;
+      }
+
+      if (urlset) {
+        const urls = doc.querySelectorAll("url");
+        urlCount = urls.length;
+        if (urlCount === 0) {
+          errors.push("No <url> elements found in <urlset>");
+          valid = false; // Is empty valid? Probably warn at least.
+        }
+      } else if (sitemapindex) {
+        const sitemaps = doc.querySelectorAll("sitemap");
+        urlCount = sitemaps.length;
+        if (urlCount === 0) {
+          errors.push("No <sitemap> elements found in <sitemapindex>");
+          valid = false;
+        }
+      }
+
+      // Basic syntax check implied by parsing, but we can check for parse errors if JSDOM exposes them 
+      // JSDOM's parsing is usually lenient. We rely on the structure check above.
+
+      if (doc.querySelector("parsererror")) {
+        errors.push("XML parsing error. content is not valid XML.");
+        valid = false;
+      }
+
+      res.json({ success: true, valid, urlCount, errors });
+
+    } catch (error) {
+      console.error("Sitemap validation error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to validate sitemap",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   // PayPal Routes
   app.get("/paypal/setup", async (req, res) => {
     await loadPaypalDefault(req, res);

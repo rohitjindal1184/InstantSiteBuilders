@@ -893,6 +893,113 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
+    // Sitemap Generator endpoint
+    if (pathname === '/generate-sitemap' && req.method === 'POST') {
+      try {
+        console.log('Processing Sitemap generation request');
+        const { type, input, frequency, priority } = req.body;
+        const urls: string[] = [];
+
+        if (type === 'text') {
+          if (!input) {
+            return res.status(400).json({ success: false, message: "No URLs provided" });
+          }
+          const rawUrls = input.split('\n').map((u: string) => u.trim()).filter((u: string) => u.length > 0);
+
+          for (const url of rawUrls) {
+            try {
+              new URL(url);
+              urls.push(url);
+            } catch (e) {
+              // skip
+            }
+          }
+
+          if (urls.length === 0) {
+            return res.status(400).json({ success: false, message: "No valid URLs found" });
+          }
+
+        } else if (type === 'url') {
+          if (!input) {
+            return res.status(400).json({ success: false, message: "No Homepage URL provided" });
+          }
+
+          try {
+            const baseUrl = new URL(input);
+            if (!['http:', 'https:'].includes(baseUrl.protocol)) {
+              return res.status(400).json({ success: false, message: "Invalid protocol" });
+            }
+
+            const response = await fetch(input);
+            if (!response.ok) throw new Error("Failed to fetch page");
+
+            const html = await response.text();
+
+            const jsdom = (await import("jsdom")).default;
+            const { JSDOM } = jsdom;
+            const dom = new JSDOM(html);
+            const doc = dom.window.document;
+            const anchors = doc.querySelectorAll('a');
+
+            const uniqueUrls = new Set<string>();
+            uniqueUrls.add(baseUrl.href);
+
+            anchors.forEach(a => {
+              try {
+                const href = a.href;
+                if (!href) return;
+                const resolvedUrl = new URL(href, baseUrl.href);
+                if (resolvedUrl.origin === baseUrl.origin) {
+                  resolvedUrl.hash = '';
+                  uniqueUrls.add(resolvedUrl.href);
+                }
+              } catch (e) { }
+            });
+
+            Array.from(uniqueUrls).slice(0, 100).forEach(u => urls.push(u));
+
+          } catch (error) {
+            return res.status(400).json({
+              success: false,
+              message: "Failed to scan website",
+              error: error instanceof Error ? error.message : String(error)
+            });
+          }
+        } else {
+          return res.status(400).json({ success: false, message: "Invalid type" });
+        }
+
+        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+        const today = new Date().toISOString().split('T')[0];
+
+        urls.forEach(url => {
+          xml += '  <url>\n';
+          xml += `    <loc>${url}</loc>\n`;
+          xml += `    <lastmod>${today}</lastmod>\n`;
+          if (frequency && frequency !== 'never') {
+            xml += `    <changefreq>${frequency}</changefreq>\n`;
+          }
+          if (priority) {
+            xml += `    <priority>${priority}</priority>\n`;
+          }
+          xml += '  </url>\n';
+        });
+
+        xml += '</urlset>';
+
+        return res.status(200).json({ success: true, xml, count: urls.length });
+
+      } catch (error) {
+        console.error("Sitemap generation error:", error);
+        return res.status(500).json({
+          success: false,
+          message: "Failed to generate sitemap",
+          error: error instanceof Error ? error.message : String(error)
+        });
+      }
+    }
+
     // URL to Markdown Conversion endpoint
     if (pathname === '/convert-url' && req.method === 'POST') {
       try {

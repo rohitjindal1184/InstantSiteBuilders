@@ -176,6 +176,14 @@ export function Footer() {
                                     Sitemap Validator
                                 </Link>
                             </li>
+                            <li>
+                                <Link
+                                    href="/sitemap-generator"
+                                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                                >
+                                    XML Sitemap Generator
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 

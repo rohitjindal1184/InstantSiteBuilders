@@ -1000,6 +1000,66 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
+    // Sitemap Extractor endpoint
+    if (pathname === '/extract-sitemap-urls' && req.method === 'POST') {
+      try {
+        console.log('Processing Sitemap extraction request');
+        const { url } = req.body;
+        if (!url) {
+          return res.status(400).json({ success: false, message: "URL is required" });
+        }
+
+        try {
+          const parsedUrl = new URL(url);
+          if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+            return res.status(400).json({ success: false, message: "Invalid protocol" });
+          }
+        } catch (e) {
+          return res.status(400).json({ success: false, message: "Invalid URL" });
+        }
+
+        const response = await fetch(url);
+        if (!response.ok) {
+          return res.status(400).json({ success: false, message: "Failed to fetch sitemap" });
+        }
+
+        const xmlContent = await response.text();
+        const jsdom = (await import("jsdom")).default;
+        const { JSDOM } = jsdom;
+        const dom = new JSDOM(xmlContent, { contentType: "text/xml" });
+        const doc = dom.window.document;
+
+        const urls: string[] = [];
+        let isIndex = false;
+
+        const urlset = doc.querySelector("urlset");
+        const sitemapindex = doc.querySelector("sitemapindex");
+
+        if (urlset) {
+          doc.querySelectorAll("url > loc").forEach(loc => {
+            if (loc.textContent) urls.push(loc.textContent.trim());
+          });
+        } else if (sitemapindex) {
+          isIndex = true;
+          doc.querySelectorAll("sitemap > loc").forEach(loc => {
+            if (loc.textContent) urls.push(loc.textContent.trim());
+          });
+        } else {
+          return res.status(400).json({ success: false, message: "Invalid sitemap format" });
+        }
+
+        return res.status(200).json({ success: true, count: urls.length, urls, isIndex });
+
+      } catch (error) {
+        console.error("Sitemap extraction error:", error);
+        return res.status(500).json({
+          success: false,
+          message: "Failed to extract URLs",
+          error: error instanceof Error ? error.message : String(error)
+        });
+      }
+    }
+
     // URL to Markdown Conversion endpoint
     if (pathname === '/convert-url' && req.method === 'POST') {
       try {

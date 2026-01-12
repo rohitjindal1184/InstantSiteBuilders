@@ -31,8 +31,8 @@ export function Footer() {
     return (
         <footer className="bg-gray-900 text-white py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid md:grid-cols-6 gap-8">
-                    <div className="md:col-span-2">
+                <div className="grid md:grid-cols-3 lg:grid-cols-7 gap-8">
+                    <div className="lg:col-span-2">
                         <div className="mb-4">
                             <img
                                 src={logoPath}
@@ -166,16 +166,8 @@ export function Footer() {
                     </div>
 
                     <div>
-                        <h4 className="text-lg font-semibold mb-4">Other Tools</h4>
+                        <h4 className="text-lg font-semibold mb-4">AI Generators</h4>
                         <ul className="space-y-2">
-                            <li>
-                                <Link
-                                    href="/sitemap-validator"
-                                    className="text-gray-300 hover:text-white transition-colors duration-200"
-                                >
-                                    Sitemap Validator
-                                </Link>
-                            </li>
                             <li>
                                 <Link
                                     href="/sitemap-generator"
@@ -190,6 +182,28 @@ export function Footer() {
                                     className="text-gray-300 hover:text-white transition-colors duration-200"
                                 >
                                     Email Signature Generator
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 className="text-lg font-semibold mb-4">Other Tools</h4>
+                        <ul className="space-y-2">
+                            <li>
+                                <Link
+                                    href="/sitemap-validator"
+                                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                                >
+                                    Sitemap Validator
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/sitemap-extractor"
+                                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                                >
+                                    Sitemap URL Extractor
                                 </Link>
                             </li>
                         </ul>

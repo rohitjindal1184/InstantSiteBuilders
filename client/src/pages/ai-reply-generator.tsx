@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Loader2, Copy, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet-async";
 
 export default function AiReplyGenerator() {
     const { toast } = useToast();
@@ -92,6 +93,17 @@ export default function AiReplyGenerator() {
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-50">
+            <Helmet>
+                <title>Free AI Reply Generator | Email, Social Media & Text Response Tool</title>
+                <meta
+                    name="description"
+                    content="Generate professional, friendly, or witty replies instantly with our free AI Reply Generator. Perfect for emails, LinkedIn, Twitter, and more using GPT-4o."
+                />
+                <meta
+                    name="keywords"
+                    content="ai reply generator, email reply generator, social media response tool, free ai writing tool, automated replies"
+                />
+            </Helmet>
             <Header />
 
             <main className="flex-grow py-12 px-4 sm:px-6 lg:px-8">

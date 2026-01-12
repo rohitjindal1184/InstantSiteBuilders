@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Loader2, Copy, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet-async";
 
 type Framework = "APE" | "RACE" | "CREATE" | "SPARK";
 
@@ -215,6 +216,17 @@ export default function AiPromptGenerator() {
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-50">
+            <Helmet>
+                <title>Best AI Prompt Generator | APE, RACE & SPARK Framework Tools</title>
+                <meta
+                    name="description"
+                    content="Create high-quality AI prompts using proven frameworks like APE, RACE, CREATE, and SPARK. Optimize your ChatGPT and Claude prompts for better results."
+                />
+                <meta
+                    name="keywords"
+                    content="ai prompt generator, prompt engineering tool, ape framework, race framework, spark framework, chatgpt prompt builder"
+                />
+            </Helmet>
             <Header />
 
             <main className="flex-grow py-12 px-4 sm:px-6 lg:px-8">

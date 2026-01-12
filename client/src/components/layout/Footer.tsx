@@ -192,6 +192,14 @@ export function Footer() {
                                     AI Reply Generator
                                 </Link>
                             </li>
+                            <li>
+                                <Link
+                                    href="/ai-prompt-generator"
+                                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                                >
+                                    AI Prompt Generator
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 

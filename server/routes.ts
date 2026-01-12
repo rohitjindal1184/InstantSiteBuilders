@@ -324,6 +324,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/convert-url", async (req, res) => {
+    try {
+      const { url } = req.body;
+      if (!url) {
+        return res.status(400).json({
+          success: false,
+          message: "URL is required"
+        });
+      }
+
+      // Basic URL validation
+      try {
+        const parsedUrl = new URL(url);
+        if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+          return res.status(400).json({
+            success: false,
+            message: "Only http and https protocols are supported"
+          });
+        }
+      } catch (e) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid URL provided"
+        });
+      }
+
+      // Fetch the URL content
+      const response = await fetch(url);
+      if (!response.ok) {
+        return res.status(400).json({
+          success: false,
+          message: `Failed to fetch URL: ${response.statusText}`
+        });
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('text/html')) {
+        return res.status(400).json({
+          success: false,
+          message: "URL must point to an HTML page"
+        });
+      }
+
+      const htmlContent = await response.text();
+
+      // Convert HTML to Markdown using turndown
+      const TurndownService = (await import('turndown')).default;
+      const turndownService = new TurndownService({
+        headingStyle: 'atx',
+        codeBlockStyle: 'fenced'
+      });
+
+      // Optional: Clean up HTML using jsdom if needed, but simple fetches often work OK directly
+      // For better results we could remove scripts/styles, but let's stick to simple implementation first.
+      // Turndown by default ignores script and style tags.
+
+      const markdown = turndownService.turndown(htmlContent);
+
+      res.json({ success: true, markdown });
+    } catch (error) {
+      console.error("URL conversion error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to convert URL",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   // PayPal Routes
   app.get("/paypal/setup", async (req, res) => {
     await loadPaypalDefault(req, res);

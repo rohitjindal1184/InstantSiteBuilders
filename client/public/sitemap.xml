@@ -100,4 +100,12 @@
     <priority>0.8</priority>
   </url>
   
+  <!-- Webpage to Markdown Converter Tool -->
+  <url>
+    <loc>https://instantsitebuilders.com/convert-webpage-to-markdown</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
 </urlset>

@@ -803,6 +803,77 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
+    // URL to Markdown Conversion endpoint
+    if (pathname === '/convert-url' && req.method === 'POST') {
+      try {
+        console.log('Processing URL conversion request');
+        const { url } = req.body;
+
+        if (!url) {
+          return res.status(400).json({
+            success: false,
+            message: "URL is required"
+          });
+        }
+
+        // Basic URL validation
+        try {
+          const parsedUrl = new URL(url);
+          if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+            return res.status(400).json({
+              success: false,
+              message: "Only http and https protocols are supported"
+            });
+          }
+        } catch (e) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid URL provided"
+          });
+        }
+
+        // Fetch the URL content
+        const response = await fetch(url);
+        if (!response.ok) {
+          return res.status(400).json({
+            success: false,
+            message: `Failed to fetch URL: ${response.statusText}`
+          });
+        }
+
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('text/html')) {
+          return res.status(400).json({
+            success: false,
+            message: "URL must point to an HTML page"
+          });
+        }
+
+        const htmlContent = await response.text();
+
+        // Convert HTML to Markdown using turndown
+        const TurndownService = (await import('turndown')).default;
+        const turndownService = new TurndownService({
+          headingStyle: 'atx',
+          codeBlockStyle: 'fenced'
+        });
+
+        const markdown = turndownService.turndown(htmlContent);
+
+        return res.status(200).json({
+          success: true,
+          markdown
+        });
+      } catch (error) {
+        console.error('URL conversion error:', error);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to convert URL',
+          error: error instanceof Error ? error.message : String(error)
+        });
+      }
+    }
+
     // Default 404 response
     return res.status(404).json({
       success: false,

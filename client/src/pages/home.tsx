@@ -826,6 +826,14 @@ export default function Home() {
                     Sitemap URL Extractor
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/email-signature-generator"
+                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                  >
+                    Email Signature Generator
+                  </Link>
+                </li>
               </ul>
             </div>
 

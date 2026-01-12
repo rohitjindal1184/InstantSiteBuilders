@@ -116,4 +116,20 @@
     <priority>0.8</priority>
   </url>
   
+  <!-- Sitemap URL Extractor Tool -->
+  <url>
+    <loc>https://instantsitebuilders.com/sitemap-extractor</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Email Signature Generator Tool -->
+  <url>
+    <loc>https://instantsitebuilders.com/email-signature-generator</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
 </urlset>

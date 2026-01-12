@@ -132,4 +132,20 @@
     <priority>0.8</priority>
   </url>
   
+  <!-- AI Reply Generator Tool -->
+  <url>
+    <loc>https://instantsitebuilders.com/ai-reply-generator</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- AI Prompt Generator Tool -->
+  <url>
+    <loc>https://instantsitebuilders.com/ai-prompt-generator</loc>
+    <lastmod>2026-01-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
 </urlset>

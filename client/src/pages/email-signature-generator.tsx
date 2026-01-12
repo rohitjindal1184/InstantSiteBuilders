@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SuggestedTools } from "@/components/SuggestedTools";
 
 const seoData = {
     title: "Free Email Signature Generator | InstantSiteBuilders",
@@ -315,6 +316,8 @@ export default function EmailSignatureGenerator() {
                             </div>
                         </div>
                     </div>
+
+                    <SuggestedTools currentToolPath="/email-signature-generator" />
                 </main>
                 <Footer />
             </div>

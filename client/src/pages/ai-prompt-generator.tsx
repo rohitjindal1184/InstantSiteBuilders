@@ -16,6 +16,7 @@ import {
 import { Loader2, Copy, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet-async";
+import { SuggestedTools } from "@/components/SuggestedTools";
 
 type Framework = "APE" | "RACE" | "CREATE" | "SPARK";
 
@@ -226,6 +227,22 @@ export default function AiPromptGenerator() {
                     name="keywords"
                     content="ai prompt generator, prompt engineering tool, ape framework, race framework, spark framework, chatgpt prompt builder"
                 />
+                <link rel="canonical" href="https://instantsitebuilders.com/ai-prompt-generator" />
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "SoftwareApplication",
+                        "name": "Best AI Prompt Generator",
+                        "applicationCategory": "Productivity",
+                        "operatingSystem": "Web",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "0",
+                            "priceCurrency": "USD"
+                        },
+                        "description": "Create high-quality AI prompts using proven frameworks like APE, RACE, CREATE, and SPARK."
+                    })}
+                </script>
             </Helmet>
             <Header />
 
@@ -311,6 +328,8 @@ export default function AiPromptGenerator() {
                         </CardContent>
                     </Card>
                 </div>
+
+                <SuggestedTools currentToolPath="/ai-prompt-generator" />
             </main>
 
             <Footer />

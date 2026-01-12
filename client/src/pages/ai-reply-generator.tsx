@@ -16,6 +16,7 @@ import {
 import { Loader2, Copy, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet-async";
+import { SuggestedTools } from "@/components/SuggestedTools";
 
 export default function AiReplyGenerator() {
     const { toast } = useToast();
@@ -103,6 +104,22 @@ export default function AiReplyGenerator() {
                     name="keywords"
                     content="ai reply generator, email reply generator, social media response tool, free ai writing tool, automated replies"
                 />
+                <link rel="canonical" href="https://instantsitebuilders.com/ai-reply-generator" />
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "SoftwareApplication",
+                        "name": "AI Reply Generator",
+                        "applicationCategory": "Productivity",
+                        "operatingSystem": "Web",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "0",
+                            "priceCurrency": "USD"
+                        },
+                        "description": "Generate professional and contextually appropriate replies to emails and social media messages."
+                    })}
+                </script>
             </Helmet>
             <Header />
 
@@ -272,6 +289,8 @@ export default function AiReplyGenerator() {
                         </CardContent>
                     </Card>
                 </div>
+
+                <SuggestedTools currentToolPath="/ai-reply-generator" />
             </main>
 
             <Footer />

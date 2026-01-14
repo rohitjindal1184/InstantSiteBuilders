@@ -31,7 +31,7 @@ export function Footer() {
     return (
         <footer className="bg-gray-900 text-white py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid md:grid-cols-3 lg:grid-cols-7 gap-8">
+                <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-8">
                     <div className="lg:col-span-2">
                         <div className="mb-4">
                             <img
@@ -162,28 +162,18 @@ export function Footer() {
                                     Webpage to Markdown
                                 </Link>
                             </li>
+                            <li>
+                                <Link
+                                    href="/convert-webpage-to-markdown"
+                                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                                >
+                                    Webpage to Markdown
+                                </Link>
+                            </li>
                         </ul>
-                    </div>
 
-                    <div>
-                        <h4 className="text-lg font-semibold mb-4">AI Generators</h4>
+                        <h4 className="text-lg font-semibold mb-4 mt-8">AI Generators</h4>
                         <ul className="space-y-2">
-                            <li>
-                                <Link
-                                    href="/sitemap-generator"
-                                    className="text-gray-300 hover:text-white transition-colors duration-200"
-                                >
-                                    XML Sitemap Generator
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/email-signature-generator"
-                                    className="text-gray-300 hover:text-white transition-colors duration-200"
-                                >
-                                    Email Signature Generator
-                                </Link>
-                            </li>
                             <li>
                                 <Link
                                     href="/ai-reply-generator"
@@ -220,6 +210,22 @@ export function Footer() {
                                     className="text-gray-300 hover:text-white transition-colors duration-200"
                                 >
                                     Sitemap URL Extractor
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/sitemap-generator"
+                                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                                >
+                                    XML Sitemap Generator
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/email-signature-generator"
+                                    className="text-gray-300 hover:text-white transition-colors duration-200"
+                                >
+                                    Email Signature Generator
                                 </Link>
                             </li>
                         </ul>

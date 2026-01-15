@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SuggestedTools } from "@/components/SuggestedTools";
 
 const seoData = {
     title: "Free XML to Markdown Converter Online | InstantSiteBuilders",
@@ -295,6 +296,7 @@ export default function ConvertXml() {
                             </Card>
                         )}
                     </div>
+                    <SuggestedTools currentToolPath="/convert-xml-to-markdown" />
                 </main>
                 <Footer />
             </div>

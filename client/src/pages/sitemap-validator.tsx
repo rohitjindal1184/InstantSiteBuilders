@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SuggestedTools } from "@/components/SuggestedTools";
 
 const seoData = {
     title: "Free XML Sitemap Validator Online | InstantSiteBuilders",
@@ -212,6 +213,7 @@ export default function SitemapValidator() {
                             </Card>
                         )}
                     </div>
+                    <SuggestedTools currentToolPath="/sitemap-validator" />
                 </main>
                 <Footer />
             </div>

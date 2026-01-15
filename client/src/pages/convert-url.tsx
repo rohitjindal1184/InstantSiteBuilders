@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SuggestedTools } from "@/components/SuggestedTools";
 
 const seoData = {
     title: "Free Webpage to Markdown Converter | InstantSiteBuilders",
@@ -191,6 +192,7 @@ export default function ConvertUrl() {
                             </Card>
                         )}
                     </div>
+                    <SuggestedTools currentToolPath="/convert-webpage-to-markdown" />
                 </main>
                 <Footer />
             </div>

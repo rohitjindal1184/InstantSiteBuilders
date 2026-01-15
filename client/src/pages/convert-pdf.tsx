@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SuggestedTools } from "@/components/SuggestedTools";
 
 const seoData = {
     title: "Free PDF to Markdown Converter Online | InstantSiteBuilders",
@@ -248,6 +249,7 @@ export default function ConvertPdf() {
                             </Card>
                         )}
                     </div>
+                    <SuggestedTools currentToolPath="/convert-pdf-to-markdown" />
                 </main>
                 <Footer />
             </div>

@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SuggestedTools } from "@/components/SuggestedTools";
 
 const seoData = {
     title: "Free XML Sitemap Generator | InstantSiteBuilders",
@@ -269,6 +270,7 @@ export default function SitemapGenerator() {
                             </Card>
                         )}
                     </div>
+                    <SuggestedTools currentToolPath="/sitemap-generator" />
                 </main>
                 <Footer />
             </div>

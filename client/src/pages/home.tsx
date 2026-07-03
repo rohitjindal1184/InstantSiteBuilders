@@ -494,7 +494,7 @@ export default function Home() {
               >
                 {service.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                    <span className="inline-block whitespace-nowrap bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-sm">
                       Best for Growing Businesses
                     </span>
                   </div>

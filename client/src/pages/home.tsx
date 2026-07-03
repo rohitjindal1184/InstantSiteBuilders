@@ -203,6 +203,38 @@ export default function Home() {
     },
   ];
 
+  const websiteExamples = [
+    {
+      industry: "Restaurant",
+      image:
+        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500",
+      imageAlt: "Sample restaurant website design with menu and booking layout",
+      mirror: "Turn menu visitors into table bookings",
+      result: "Built for mobile-first local discovery",
+    },
+    {
+      industry: "Salon",
+      image:
+        "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500",
+      imageAlt: "Sample salon website design with services and appointment booking",
+      mirror: "Make it easy to book from Instagram traffic",
+      result: "Designed to turn visits into appointments",
+    },
+    {
+      industry: "Contractor",
+      image:
+        "https://images.unsplash.com/photo-1504307653784-414bc1655797?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500",
+      imageAlt: "Sample contractor website design with quote request and trust signals",
+      mirror: "Help homeowners request a quote in minutes",
+      result: "Built for trust, speed, and phone leads",
+    },
+  ];
+
+  const handleExampleClick = (industry: string) => {
+    trackEvent("example_card_cta_click", "engagement", industry);
+    scrollToSection("contact");
+  };
+
   const testimonials = [
     {
       text: "I kept putting off a website because I thought it would cost thousands. They built our bakery site for free and we were taking online orders within two days. Our walk-in traffic went up because people finally found us on Google.",
@@ -473,8 +505,63 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Website Examples */}
+      <section id="examples" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              See What Your Business Could Look Like Online
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Three sample website directions to help you picture what your
+              business could look like online.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {websiteExamples.map((example) => (
+              <Card
+                key={example.industry}
+                className="flex flex-col overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              >
+                <div className="px-4 pt-4 flex items-center justify-between gap-2">
+                  <span className="text-sm font-semibold text-blue-700 uppercase tracking-wide">
+                    {example.industry}
+                  </span>
+                  <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                    Sample
+                  </span>
+                </div>
+                <div className="aspect-[16/10] mx-4 mt-3 rounded-lg overflow-hidden bg-gray-200">
+                  <img
+                    src={example.image}
+                    alt={example.imageAlt}
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <CardContent className="flex flex-col flex-1 p-6 pt-4">
+                  <p className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                    {example.mirror}
+                  </p>
+                  <p className="text-sm text-gray-600 mb-6 line-clamp-1">
+                    {example.result}
+                  </p>
+                  <Button
+                    onClick={() => handleExampleClick(example.industry)}
+                    className="w-full mt-auto bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    Get a Site Like This
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Services Section */}
-      <section id="services" className="py-20 bg-gray-50">
+      <section id="services" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">

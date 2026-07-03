@@ -206,6 +206,7 @@ export default function Home() {
   const websiteExamples = [
     {
       industry: "Restaurant",
+      demoPath: "/demos/restaurant",
       image:
         "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500",
       imageAlt: "Sample restaurant website design with menu and booking layout",
@@ -214,6 +215,7 @@ export default function Home() {
     },
     {
       industry: "Salon",
+      demoPath: "/demos/salon",
       image:
         "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500",
       imageAlt: "Sample salon website design with services and appointment booking",
@@ -222,6 +224,7 @@ export default function Home() {
     },
     {
       industry: "Contractor",
+      demoPath: "/demos/contractor",
       image:
         "https://images.unsplash.com/photo-1504307653784-414bc1655797?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500",
       imageAlt: "Sample contractor website design with quote request and trust signals",
@@ -230,9 +233,9 @@ export default function Home() {
     },
   ];
 
-  const handleExampleClick = (industry: string) => {
+  const handleExampleClick = (demoPath: string, industry: string) => {
     trackEvent("example_card_cta_click", "engagement", industry);
-    scrollToSection("contact");
+    window.open(demoPath, "_blank", "noopener,noreferrer");
   };
 
   const testimonials = [
@@ -548,7 +551,7 @@ export default function Home() {
                     {example.result}
                   </p>
                   <Button
-                    onClick={() => handleExampleClick(example.industry)}
+                    onClick={() => handleExampleClick(example.demoPath, example.industry)}
                     className="w-full mt-auto bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     See This Site

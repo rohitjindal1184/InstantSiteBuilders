@@ -45,19 +45,19 @@ export function Header() {
                                 onClick={() => handleNavigation("features")}
                                 className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
                             >
-                                Features
+                                Why Us
                             </button>
                             <button
                                 onClick={() => handleNavigation("services")}
                                 className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
                             >
-                                Services
+                                Pricing
                             </button>
                             <button
                                 onClick={() => handleNavigation("testimonials")}
                                 className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
                             >
-                                Reviews
+                                Success Stories
                             </button>
                             <button
                                 onClick={() => handleNavigation("contact")}
@@ -67,9 +67,9 @@ export function Header() {
                             </button>
                             <Button
                                 onClick={() => handleNavigation("contact")}
-                                className="bg-blue-600 hover:bg-blue-700"
+                                className="bg-green-600 hover:bg-green-700"
                             >
-                                Get Started
+                                Get My Free Website
                             </Button>
                         </div>
                     </div>
@@ -97,19 +97,19 @@ export function Header() {
                             onClick={() => handleNavigation("features")}
                             className="block px-3 py-2 text-gray-600 hover:text-blue-600 w-full text-left"
                         >
-                            Features
+                            Why Us
                         </button>
                         <button
                             onClick={() => handleNavigation("services")}
                             className="block px-3 py-2 text-gray-600 hover:text-blue-600 w-full text-left"
                         >
-                            Services
+                            Pricing
                         </button>
                         <button
                             onClick={() => handleNavigation("testimonials")}
                             className="block px-3 py-2 text-gray-600 hover:text-blue-600 w-full text-left"
                         >
-                            Reviews
+                            Success Stories
                         </button>
                         <button
                             onClick={() => handleNavigation("contact")}
@@ -120,9 +120,9 @@ export function Header() {
                         <div className="px-3 py-2">
                             <Button
                                 onClick={() => handleNavigation("contact")}
-                                className="bg-blue-600 hover:bg-blue-700 w-full"
+                                className="bg-green-600 hover:bg-green-700 w-full"
                             >
-                                Get Started
+                                Get My Free Website
                             </Button>
                         </div>
                     </div>

@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Footer } from "@/components/layout/Footer";
 
 import {
   Form,
@@ -42,6 +41,12 @@ import {
   Twitter,
   Linkedin,
   Instagram,
+  Search,
+  Phone,
+  Store,
+  Scissors,
+  Wrench,
+  UtensilsCrossed,
 } from "lucide-react";
 
 import { Helmet } from "react-helmet-async";
@@ -112,79 +117,86 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const businessTypes = [
+    { icon: UtensilsCrossed, label: "Restaurants & Cafés" },
+    { icon: Scissors, label: "Salons & Spas" },
+    { icon: Wrench, label: "Contractors & Trades" },
+    { icon: Store, label: "Retail & Boutiques" },
+  ];
+
   const features = [
     {
-      icon: Rocket,
-      title: "Fast Delivery",
+      icon: Search,
+      title: "Get Found on Google",
       description:
-        "Get your website online in just 48 hours. No waiting weeks or months for your digital presence.",
+        "When customers search for your services nearby, your business shows up. No more losing leads to competitors who already have a website.",
       color: "blue",
     },
     {
       icon: Gift,
-      title: "Free Basic Option",
+      title: "Start Free, Grow Later",
       description:
-        "Get a professional basic website completely free. No hidden costs, no catches - perfect for getting started online.",
+        "Launch with a professional website at zero cost. Upgrade only when your business is ready — no contracts, no surprises.",
       color: "green",
     },
     {
-      icon: Palette,
-      title: "Custom Design",
+      icon: Rocket,
+      title: "Live in 48 Hours",
       description:
-        "Every website is uniquely tailored to your business needs and brand identity. No cookie-cutter templates.",
+        "You run a business, not a web project. We handle the build so you can focus on customers while your site goes live this week.",
       color: "purple",
     },
     {
       icon: Smartphone,
-      title: "Mobile Ready",
+      title: "Works on Every Phone",
       description:
-        "Fully optimized for all devices. Your website will look perfect on phones, tablets, and desktops.",
+        "Most of your customers browse on mobile. Your site looks sharp on every screen — so the first impression always feels professional.",
       color: "orange",
     },
   ];
 
   const services = [
     {
-      name: "Basic Website",
+      name: "Starter Site",
       price: "FREE",
       priceValue: "0.00",
-      description: "Perfect for small businesses and personal websites",
+      description: "Everything you need to look legit online and start getting calls",
       features: [
-        "Up to 5 pages",
-        "Mobile responsive design",
-        "Contact form",
+        "Up to 5 pages (Home, About, Services, Contact & more)",
+        "Mobile-friendly design",
+        "Contact form so leads reach you",
       ],
       popular: false,
       isFree: true,
     },
     {
-      name: "Business Website",
+      name: "Growth Site",
       price: "$399",
       priceValue: "399.00",
-      description: "Ideal for growing businesses that need more features",
+      description: "For businesses ready to rank higher and bring in more customers",
       features: [
         "Up to 10 pages",
-        "Advanced SEO optimization",
-        "Content management system",
-        "Analytics integration",
-        "Social media integration",
-        "Hosting Fee Extra*"
+        "Local SEO setup to rank in your area",
+        "Easy content updates — no developer needed",
+        "Visitor analytics so you know what's working",
+        "Social media links built in",
+        "Hosting fee extra*",
       ],
       popular: true,
       isFree: false,
     },
     {
-      name: "Custom Web App",
+      name: "Custom Build",
       price: "$799",
       priceValue: "799.00",
-      description: "Complete solution for established businesses",
+      description: "Full custom solution for shops, booking, or online sales",
       features: [
         "Unlimited pages",
-        "Custom web application",
-        "Advanced e-commerce",
-        "Database integration",
-        "Custom features",
-        "Hosting Fee Extra*"
+        "Online booking or e-commerce",
+        "Custom features for your workflow",
+        "Database & integrations",
+        "Priority support",
+        "Hosting fee extra*",
       ],
       popular: false,
       isFree: false,
@@ -193,23 +205,23 @@ export default function Home() {
 
   const testimonials = [
     {
-      text: "InstantSiteBuilders delivered exactly what they promised. Our new website looks amazing and we were online in just 2 days. The whole process was smooth and professional - and the basic option was completely free!",
+      text: "I kept putting off a website because I thought it would cost thousands. They built our bakery site for free and we were taking online orders within two days. Our walk-in traffic went up because people finally found us on Google.",
       author: "Sarah Johnson",
-      role: "Owner, Local Bakery",
+      role: "Owner, Sweet Rise Bakery",
       avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100",
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100",
     },
     {
-      text: "Outstanding service! They understood our vision perfectly and created a website that truly represents our brand. The mobile optimization is flawless, and the pricing was very reasonable.",
+      text: "As a one-person plumbing business, I didn't have time to figure out websites. They asked the right questions, built exactly what I needed, and now I get 3–4 new job calls a week from the site alone.",
       author: "Mike Chen",
-      role: "CEO, Tech Startup",
+      role: "Owner, Chen Plumbing Co.",
       avatar:
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100",
     },
     {
-      text: "Great value! Other agencies quoted thousands for basic work, but InstantSiteBuilders offered a free basic option and reasonable pricing for premium features. Highly recommend!",
+      text: "Other agencies wanted $5,000 just for a basic site. Here I got a beautiful boutique website that matches my brand, works perfectly on phones, and didn't break my startup budget.",
       author: "Emily Rodriguez",
-      role: "Founder, Fashion Boutique",
+      role: "Owner, Luna Lane Boutique",
       avatar:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100",
     },
@@ -218,14 +230,14 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50">
       <Helmet>
-        <title>Instant Website Builder | Free & Fast Website Builder for Small Business</title>
+        <title>Small Business Websites — Free to Start, Live in 48 Hours | InstantSiteBuilders</title>
         <meta
           name="description"
-          content="Build your website online free with our instant website builder. Fast, SEO-friendly, and perfect for small businesses. No-code website builder with professional results in 48 hours."
+          content="Professional websites built for small businesses. Start free, go live in 48 hours, no coding required. Get found on Google and turn visitors into customers."
         />
         <meta
           name="keywords"
-          content="instant website builder, free website builder, website builder for small business, SEO-friendly website builder, build website online free, website builder with SEO tools, no-code website builder, fast website builder"
+          content="small business website, free website for small business, local business website, affordable web design, website in 48 hours, small business web design, get business online"
         />
       </Helmet>
       {/* Navigation */}
@@ -246,19 +258,19 @@ export default function Home() {
                   onClick={() => scrollToSection("features")}
                   className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
                 >
-                  Features
+                  Why Us
                 </button>
                 <button
                   onClick={() => scrollToSection("services")}
                   className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
                 >
-                  Services
+                  Pricing
                 </button>
                 <button
                   onClick={() => scrollToSection("testimonials")}
                   className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
                 >
-                  Reviews
+                  Success Stories
                 </button>
                 <button
                   onClick={() => scrollToSection("contact")}
@@ -268,9 +280,9 @@ export default function Home() {
                 </button>
                 <Button
                   onClick={() => scrollToSection("contact")}
-                  className="bg-blue-600 hover:bg-blue-700"
+                  className="bg-green-600 hover:bg-green-700"
                 >
-                  Get Started
+                  Get My Free Website
                 </Button>
               </div>
             </div>
@@ -298,19 +310,19 @@ export default function Home() {
                 onClick={() => scrollToSection("features")}
                 className="block px-3 py-2 text-gray-600 hover:text-blue-600 w-full text-left"
               >
-                Features
+                Why Us
               </button>
               <button
                 onClick={() => scrollToSection("services")}
                 className="block px-3 py-2 text-gray-600 hover:text-blue-600 w-full text-left"
               >
-                Services
+                Pricing
               </button>
               <button
                 onClick={() => scrollToSection("testimonials")}
                 className="block px-3 py-2 text-gray-600 hover:text-blue-600 w-full text-left"
               >
-                Reviews
+                Success Stories
               </button>
               <button
                 onClick={() => scrollToSection("contact")}
@@ -320,9 +332,9 @@ export default function Home() {
               </button>
               <Button
                 onClick={() => scrollToSection("contact")}
-                className="mx-3 mt-2 w-auto bg-blue-600 hover:bg-blue-700"
+                className="mx-3 mt-2 w-auto bg-green-600 hover:bg-green-700"
               >
-                Get Started
+                Get My Free Website
               </Button>
             </div>
           </div>
@@ -330,44 +342,87 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-600 to-blue-700 text-white overflow-hidden">
-        <div className="absolute inset-0 bg-black opacity-10"></div>
+      <section className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-blue-800 text-white overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center opacity-15"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6 text-sm font-medium text-blue-100">
+                <Store className="w-4 h-4" />
+                Built for local & small businesses
+              </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                Launch Your Website{" "}
-                <span className="text-green-400">Instantly</span>
+                Your Customers Are Searching.{" "}
+                <span className="text-green-400">Are They Finding You?</span>
               </h1>
-              <p className="text-xl md:text-2xl mb-8 text-blue-100 leading-relaxed">
-                Fast and professionally built websites & apps for
-                individuals and small businesses - starting free!
+              <p className="text-xl md:text-2xl mb-6 text-blue-100 leading-relaxed">
+                We build professional websites for small businesses — free to
+                start, live in 48 hours, and zero tech skills required on your
+                end.
               </p>
+              <div className="flex flex-wrap gap-4 mb-8 justify-center lg:justify-start text-sm text-blue-200">
+                <span className="flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-green-400" /> Free starter site
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-green-400" /> Live in 48 hours
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-green-400" /> No coding needed
+                </span>
+              </div>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button
                   onClick={() => scrollToSection("contact")}
                   className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all duration-200"
                   size="lg"
                 >
-                  Get Started Today
+                  Get My Free Website
                 </Button>
                 <Button
-                  onClick={() => scrollToSection("features")}
+                  onClick={() => scrollToSection("services")}
                   variant="outline"
-                  className="border-2 border-white text-blue-600 hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold transition-all hover:scale-105 duration-200"
+                  className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-blue-900 px-8 py-4 text-lg font-semibold transition-all hover:scale-105 duration-200"
                   size="lg"
                 >
-                  Learn More
+                  See Pricing
                 </Button>
               </div>
             </div>
             <div className="hidden lg:block">
               <img
-                src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
-                alt="Professional web development team working on computers"
-                className="rounded-2xl shadow-2xl w-full h-auto transform rotate-3 hover:rotate-0 transition-transform duration-300"
+                src="https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+                alt="Small business owner reviewing their new professional website"
+                className="rounded-2xl shadow-2xl w-full h-auto transform rotate-2 hover:rotate-0 transition-transform duration-300"
               />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Who We Help */}
+      <section className="py-12 bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-500 text-sm font-medium uppercase tracking-wide mb-8">
+            Trusted by owners across every industry
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {businessTypes.map((type, index) => {
+              const Icon = type.icon;
+              return (
+                <div
+                  key={index}
+                  className="flex flex-col items-center gap-3 p-4 rounded-xl hover:bg-blue-50 transition-colors duration-200"
+                >
+                  <div className="bg-blue-100 text-blue-700 rounded-full w-14 h-14 flex items-center justify-center">
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <span className="text-gray-700 font-medium text-center text-sm">
+                    {type.label}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -377,11 +432,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose InstantSiteBuilders?
+              Why Small Business Owners Choose Us
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We deliver professional websites that help your business grow,
-              with unmatched speed and a free basic option to get you started.
+              You didn't start your business to become a web designer. We handle
+              the website so you can handle what you do best — serving customers
+              and growing your business.
             </p>
           </div>
 
@@ -422,11 +478,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Website Design Services
+              Simple Pricing. No Surprises.
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Choose the service that fits your needs. Basic websites are completely free,
-              with premium options available for advanced features.
+              Start with a free website today. Upgrade when your business grows —
+              you only pay for what you actually need.
             </p>
           </div>
 
@@ -439,7 +495,7 @@ export default function Home() {
                 {service.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                     <span className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                      Most Popular
+                      Best for Growing Businesses
                     </span>
                   </div>
                 )}
@@ -470,14 +526,14 @@ export default function Home() {
                         onClick={() => scrollToSection("contact")}
                         className="w-full bg-green-600 hover:bg-green-700 text-white"
                       >
-                        Get Started Free
+                        Claim My Free Site
                       </Button>
                     ) : (
                       <Button
                         onClick={() => scrollToSection("contact")}
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                       >
-                        Get Started
+                        Get a Quote
                       </Button>
                     )}
                   </div>
@@ -493,11 +549,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              What Our Clients Say
+              Real Results from Real Business Owners
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Don't just take our word for it. Here's what real clients say
-              about working with us.
+              These aren't tech companies — they're local shops, trades, and
+              service businesses just like yours.
             </p>
           </div>
 
@@ -545,11 +601,11 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Ready to Get Started?
+              Let's Get Your Business Online
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Tell us about your project and we'll get back to you within 24
-              hours with a custom proposal for your needs.
+              Tell us about your business and we'll send you a free proposal within
+              24 hours. No pressure, no jargon — just a clear plan and honest pricing.
             </p>
           </div>
 
@@ -630,7 +686,7 @@ export default function Home() {
                         <FormControl>
                           <Textarea
                             rows={6}
-                            placeholder="Tell us about your business, timeline, and any specific requirements..."
+                            placeholder="What type of business do you run? What services do you offer? Any examples of sites you like?"
                             className="resize-vertical"
                             {...field}
                           />
@@ -649,11 +705,11 @@ export default function Home() {
                     >
                       {contactMutation.isPending
                         ? "Sending..."
-                        : "Send Message"}
+                        : "Send My Free Proposal Request"}
                     </Button>
                     <p className="text-gray-600 text-sm mt-4">
-                      We'll respond within 24 hours with a custom proposal for your
-                      project.
+                      <Phone className="w-4 h-4 inline mr-1" />
+                      We'll reply within 24 hours with next steps — usually sooner.
                     </p>
                   </div>
                 </form>
@@ -676,9 +732,9 @@ export default function Home() {
                 />
               </div>
               <p className="text-gray-300 mb-6 leading-relaxed">
-                Fast and professionally built websites & apps for
-                individuals and small businesses. Get online in 48 hours with
-                our expert team - starting free!
+                Professional websites for small businesses — built for you, live
+                in 48 hours, and free to get started. Stop losing customers to
+                competitors who already show up online.
               </p>
               <div className="flex space-x-4">
                 <a
@@ -716,7 +772,7 @@ export default function Home() {
                     onClick={() => scrollToSection("features")}
                     className="text-gray-300 hover:text-white transition-colors duration-200"
                   >
-                    Features
+                    Why Us
                   </button>
                 </li>
                 <li>
@@ -724,7 +780,7 @@ export default function Home() {
                     onClick={() => scrollToSection("services")}
                     className="text-gray-300 hover:text-white transition-colors duration-200"
                   >
-                    Services
+                    Pricing
                   </button>
                 </li>
                 <li>
@@ -732,7 +788,7 @@ export default function Home() {
                     onClick={() => scrollToSection("testimonials")}
                     className="text-gray-300 hover:text-white transition-colors duration-200"
                   >
-                    Reviews
+                    Success Stories
                   </button>
                 </li>
                 <li>

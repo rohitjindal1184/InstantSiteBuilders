@@ -41,9 +41,9 @@ export function Footer() {
                             />
                         </div>
                         <p className="text-gray-300 mb-6 leading-relaxed">
-                            Fast and professionally built websites & apps for individuals and
-                            small businesses. Get online in 48 hours with our expert team -
-                            starting free!
+                            Professional websites for small businesses — built for you,
+                            live in 48 hours, and free to get started. Stop losing
+                            customers to competitors who already show up online.
                         </p>
                         <div className="flex space-x-4">
                             <a
@@ -81,7 +81,7 @@ export function Footer() {
                                     onClick={() => handleNavigation("features")}
                                     className="text-gray-300 hover:text-white transition-colors duration-200"
                                 >
-                                    Features
+                                    Why Us
                                 </button>
                             </li>
                             <li>
@@ -89,7 +89,7 @@ export function Footer() {
                                     onClick={() => handleNavigation("services")}
                                     className="text-gray-300 hover:text-white transition-colors duration-200"
                                 >
-                                    Services
+                                    Pricing
                                 </button>
                             </li>
                             <li>
@@ -97,7 +97,7 @@ export function Footer() {
                                     onClick={() => handleNavigation("testimonials")}
                                     className="text-gray-300 hover:text-white transition-colors duration-200"
                                 >
-                                    Reviews
+                                    Success Stories
                                 </button>
                             </li>
                             <li>

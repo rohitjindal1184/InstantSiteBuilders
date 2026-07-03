@@ -551,7 +551,7 @@ export default function Home() {
                     onClick={() => handleExampleClick(example.industry)}
                     className="w-full mt-auto bg-blue-600 hover:bg-blue-700 text-white"
                   >
-                    Get a Site Like This
+                    See This Site
                   </Button>
                 </CardContent>
               </Card>

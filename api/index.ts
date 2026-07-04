@@ -944,9 +944,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const uniqueUrls = new Set<string>();
             uniqueUrls.add(baseUrl.href);
 
-            anchors.forEach(a => {
+            anchors.forEach((a: Element) => {
               try {
-                const href = a.href;
+                const href = (a as HTMLAnchorElement).href;
                 if (!href) return;
                 const resolvedUrl = new URL(href, baseUrl.href);
                 if (resolvedUrl.origin === baseUrl.origin) {
@@ -1036,12 +1036,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const sitemapindex = doc.querySelector("sitemapindex");
 
         if (urlset) {
-          doc.querySelectorAll("url > loc").forEach(loc => {
+          doc.querySelectorAll("url > loc").forEach((loc: Element) => {
             if (loc.textContent) urls.push(loc.textContent.trim());
           });
         } else if (sitemapindex) {
           isIndex = true;
-          doc.querySelectorAll("sitemap > loc").forEach(loc => {
+          doc.querySelectorAll("sitemap > loc").forEach((loc: Element) => {
             if (loc.textContent) urls.push(loc.textContent.trim());
           });
         } else {

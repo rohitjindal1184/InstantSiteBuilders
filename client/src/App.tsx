@@ -20,6 +20,7 @@ import EmailSignatureGenerator from "@/pages/email-signature-generator";
 import AiReplyGenerator from "@/pages/ai-reply-generator";
 import AiPromptGenerator from "@/pages/ai-prompt-generator";
 import DemoSite from "@/pages/demo-site";
+import Redirect from "@/pages/redirect";
 // Analytics library still available for tracking events and page views
 import { useAnalytics } from "./hooks/use-analytics";
 import { Analytics } from '@vercel/analytics/react';
@@ -45,6 +46,7 @@ function Router() {
       <Route path="/ai-reply-generator" component={AiReplyGenerator} />
       <Route path="/demos/:industry" component={DemoSite} />
       <Route path="/ai-prompt-generator" component={AiPromptGenerator} />
+      <Route path="/redirect" component={Redirect} />
       <Route component={NotFound} />
     </Switch>
   );

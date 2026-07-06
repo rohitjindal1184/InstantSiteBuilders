@@ -9,6 +9,7 @@ Crawl-delay: 1
 
 # Block sensitive areas (if any)
 Disallow: /api/
+Disallow: /redirect
 Disallow: /*.json$
 
 # Allow specific search engines

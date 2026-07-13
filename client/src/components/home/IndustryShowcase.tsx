@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Phone, Clock, ArrowRight } from "lucide-react";
+import { ExternalLink, Phone, Clock, ArrowRight, Star } from "lucide-react";
 import { demos, demoSlugs, type DemoSlug } from "@/data/demos";
 import { trackEvent } from "@/lib/analytics";
 import { Reveal } from "@/components/motion";
@@ -30,15 +30,16 @@ function BrowserFrame({ domain, children }: { domain: string; children: React.Re
 
 function DemoPreview({ slug }: { slug: DemoSlug }) {
   const demo = demos[slug];
+  const testimonial = demo.testimonials[0];
   return (
     <div className="bg-white text-left">
       {/* Mini nav */}
       <div className="flex items-center justify-between px-4 sm:px-6 py-2.5 border-b border-gray-100">
-        <span className={`text-sm sm:text-base font-bold ${demo.accentText}`}>
+        <span className={`font-display text-sm sm:text-base font-bold ${demo.accentText}`}>
           {demo.name}
         </span>
         <span
-          className={`${demo.accent.split(" ")[0]} text-white text-[10px] sm:text-xs font-semibold px-2.5 sm:px-3 py-1 rounded`}
+          className={`${demo.accent.split(" ")[0]} text-white text-[10px] sm:text-xs font-semibold px-2.5 sm:px-3 py-1 rounded-full`}
         >
           {demo.cta}
         </span>
@@ -52,25 +53,37 @@ function DemoPreview({ slug }: { slug: DemoSlug }) {
           loading="lazy"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className={`absolute inset-0 bg-gradient-to-r ${demo.heroBg}`} />
+        <div className={`absolute inset-0 bg-gradient-to-br ${demo.heroBg}`} />
         <div className="relative h-full flex flex-col justify-center px-4 sm:px-8">
           <p className="text-[9px] sm:text-[10px] uppercase tracking-widest text-white/70 mb-1">
-            Welcome
+            Welcome to
           </p>
-          <p className="text-white font-bold text-lg sm:text-2xl mb-1.5">{demo.name}</p>
+          <p className="font-display text-white font-bold text-lg sm:text-2xl mb-1.5">
+            {demo.name}
+          </p>
           <p className="text-white/85 text-xs sm:text-sm max-w-xs mb-3 line-clamp-2">
             {demo.tagline}
           </p>
           <span
-            className={`${demo.accent.split(" ")[0]} text-white text-[10px] sm:text-xs font-semibold px-3 py-1.5 rounded w-fit`}
+            className={`${demo.accent.split(" ")[0]} text-white text-[10px] sm:text-xs font-semibold px-3 py-1.5 rounded-full w-fit mb-3`}
           >
             {demo.cta}
           </span>
+          <div className="flex gap-4 pt-2 border-t border-white/15 w-fit">
+            {demo.stats.map((stat) => (
+              <div key={stat.label}>
+                <p className="font-display text-white font-bold text-xs sm:text-sm">
+                  {stat.value}
+                </p>
+                <p className="text-white/60 text-[8px] sm:text-[9px]">{stat.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Mini services + contact strip */}
-      <div className="px-4 sm:px-6 py-3 sm:py-4">
+      <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100">
         <div className="flex flex-wrap gap-2 mb-3">
           {demo.services.map((service) => (
             <span
@@ -89,6 +102,18 @@ function DemoPreview({ slug }: { slug: DemoSlug }) {
             <Clock className="w-3 h-3" /> {demo.hours}
           </span>
         </div>
+      </div>
+
+      {/* Mini testimonial */}
+      <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-start gap-2">
+        <div className="flex gap-0.5 shrink-0 pt-0.5">
+          {Array.from({ length: testimonial.rating }).map((_, i) => (
+            <Star key={i} className="w-2.5 h-2.5 text-amber-400 fill-amber-400" />
+          ))}
+        </div>
+        <p className="text-[10px] sm:text-xs text-gray-500 italic line-clamp-1">
+          "{testimonial.quote}" — {testimonial.name}
+        </p>
       </div>
     </div>
   );

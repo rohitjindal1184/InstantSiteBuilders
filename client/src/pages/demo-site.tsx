@@ -5,6 +5,7 @@ import { Link, useRoute } from "wouter";
 import { Phone, MapPin, Clock, Star, Quote, ArrowRight } from "lucide-react";
 import { demos, type DemoSlug } from "@/data/demos";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
+import SalonDemo from "@/pages/demos/salon";
 
 export default function DemoSite() {
   const [, params] = useRoute("/demos/:industry");
@@ -19,6 +20,11 @@ export default function DemoSite() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [demo]);
+
+  // The salon demo has its own fully bespoke page.
+  if (slug === "salon") {
+    return <SalonDemo />;
+  }
 
   if (!demo) {
     return (

@@ -2,53 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
 import { Link, useRoute } from "wouter";
 import { Phone, MapPin, Clock } from "lucide-react";
-
-const demos = {
-  restaurant: {
-    name: "Harvest Table Bistro",
-    tagline: "Fresh local food, warm atmosphere, easy online reservations",
-    heroImage:
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=900",
-    accent: "bg-amber-600 hover:bg-amber-700",
-    accentText: "text-amber-600",
-    heroBg: "from-amber-900/80 to-amber-950/90",
-    cta: "Book a Table",
-    services: ["Seasonal lunch menu", "Private dining", "Takeout & delivery"],
-    hours: "Tue–Sun · 11am–10pm",
-    phone: "(555) 214-8890",
-    address: "124 Main Street, Riverside",
-  },
-  salon: {
-    name: "Luna Glow Salon",
-    tagline: "Hair, nails, and spa services — book in minutes from your phone",
-    heroImage:
-      "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=900",
-    accent: "bg-rose-600 hover:bg-rose-700",
-    accentText: "text-rose-600",
-    heroBg: "from-rose-900/80 to-rose-950/90",
-    cta: "Book Appointment",
-    services: ["Cuts & color", "Blowouts", "Manicures & facials"],
-    hours: "Mon–Sat · 9am–7pm",
-    phone: "(555) 903-4412",
-    address: "88 Oak Avenue, Riverside",
-  },
-  contractor: {
-    name: "Premier Home Services",
-    tagline: "Licensed trades you can trust — fast quotes, clear pricing",
-    heroImage:
-      "https://images.unsplash.com/photo-1504307653784-414bc1655797?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=900",
-    accent: "bg-blue-700 hover:bg-blue-800",
-    accentText: "text-blue-700",
-    heroBg: "from-slate-900/85 to-blue-950/90",
-    cta: "Request a Quote",
-    services: ["Plumbing repairs", "Electrical work", "Kitchen & bath remodels"],
-    hours: "Mon–Fri · 7am–6pm",
-    phone: "(555) 672-3301",
-    address: "Serving Riverside & nearby towns",
-  },
-} as const;
-
-type DemoSlug = keyof typeof demos;
+import { demos, type DemoSlug } from "@/data/demos";
 
 export default function DemoSite() {
   const [, params] = useRoute("/demos/:industry");

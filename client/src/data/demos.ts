@@ -109,7 +109,7 @@ export const demos = {
     name: "Luna Glow Salon",
     tagline: "Hair, nails, and spa services — book in minutes from your phone",
     heroImage:
-      "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=900",
+      "https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=900",
     accent: "bg-rose-600 hover:bg-rose-700",
     accentText: "text-rose-600",
     heroBg: "from-rose-900/80 to-rose-950/90",
@@ -253,7 +253,7 @@ export const demos = {
     name: "Brightside Dental",
     tagline: "Gentle, modern dentistry for the whole family — same-week visits",
     heroImage:
-      "https://images.unsplash.com/photo-1629909613654-28e377c37b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=900",
+      "https://images.unsplash.com/photo-1598256989800-fe5f95da9787?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&h=900",
     accent: "bg-sky-600 hover:bg-sky-700",
     accentText: "text-sky-600",
     heroBg: "from-sky-900/80 to-slate-950/90",

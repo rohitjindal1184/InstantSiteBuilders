@@ -17,6 +17,25 @@
       "destination": "/index.html"
     }
   ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' https://www.googletagmanager.com 'sha256-LrsTHpASKm8YadV+S6xrzUzhBHb+6ynNn9aLNZ7lSxo='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://api.dicebear.com https://cdn-icons-png.flaticon.com; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.google.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "origin-when-cross-origin"
+        }
+      ]
+    }
+  ],
   "env": {
     "NODE_ENV": "production"
   }

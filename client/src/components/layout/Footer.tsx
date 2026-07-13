@@ -162,14 +162,6 @@ export function Footer() {
                                     Webpage to Markdown
                                 </Link>
                             </li>
-                            <li>
-                                <Link
-                                    href="/convert-webpage-to-markdown"
-                                    className="text-gray-300 hover:text-white transition-colors duration-200"
-                                >
-                                    Webpage to Markdown
-                                </Link>
-                            </li>
                         </ul>
 
                         <h4 className="text-lg font-semibold mb-4 mt-8">AI Generators</h4>

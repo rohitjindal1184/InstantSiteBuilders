@@ -4,6 +4,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { HelmetProvider } from 'react-helmet-async';
 import Home from '../client/src/pages/home';
 
 // Mock the API request function
@@ -24,15 +25,24 @@ vi.mock('../client/src/hooks/use-toast', () => ({
   }),
 }));
 
-// Mock framer motion
+// Mock framer motion: motion.* renders the plain element with motion props stripped
+const MOTION_PROPS = [
+  'initial', 'animate', 'exit', 'variants', 'transition', 'whileInView',
+  'whileHover', 'whileTap', 'viewport', 'layout', 'layoutId',
+];
 vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    section: ({ children, ...props }: any) => <section {...props}>{children}</section>,
-    h1: ({ children, ...props }: any) => <h1 {...props}>{children}</h1>,
-    p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
-    button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
-  },
+  motion: new Proxy({} as Record<string, any>, {
+    get: (_target, tag: string) =>
+      ({ children, ...props }: any) => {
+        const cleaned = Object.fromEntries(
+          Object.entries(props).filter(([key]) => !MOTION_PROPS.includes(key)),
+        );
+        return React.createElement(tag, cleaned, children);
+      },
+  }),
+  AnimatePresence: ({ children }: any) => <>{children}</>,
+  useReducedMotion: () => true,
+  useInView: () => true,
 }));
 
 const TestWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -44,9 +54,11 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => {
   });
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 };
 
@@ -65,7 +77,7 @@ describe('Contact Form', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/full name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/business name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/tell us about your business/i)).toBeInTheDocument();
@@ -83,7 +95,7 @@ describe('Contact Form', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/name is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/^name is required$/i)).toBeInTheDocument();
       expect(screen.getByText(/please enter a valid email/i)).toBeInTheDocument();
       expect(screen.getByText(/business name is required/i)).toBeInTheDocument();
       expect(screen.getByText(/please provide more details/i)).toBeInTheDocument();
@@ -141,7 +153,7 @@ describe('Contact Form', () => {
     );
 
     // Fill out the form
-    await user.type(screen.getByLabelText(/name/i), 'John Doe');
+    await user.type(screen.getByLabelText(/full name/i), 'John Doe');
     await user.type(screen.getByLabelText(/email/i), 'john@example.com');
     await user.type(screen.getByLabelText(/business name/i), 'Acme Corp');
     await user.type(screen.getByLabelText(/tell us about your business/i), 'We need a professional website for our growing business');
@@ -150,14 +162,11 @@ describe('Contact Form', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockApiRequest).toHaveBeenCalledWith('/api/contact', {
-        method: 'POST',
-        body: {
-          name: 'John Doe',
-          email: 'john@example.com',
-          company: 'Acme Corp',
-          message: 'We need a professional website for our growing business'
-        }
+      expect(mockApiRequest).toHaveBeenCalledWith('POST', '/api/contact', {
+        name: 'John Doe',
+        email: 'john@example.com',
+        company: 'Acme Corp',
+        message: 'We need a professional website for our growing business'
       });
     });
   });
@@ -178,7 +187,7 @@ describe('Contact Form', () => {
     );
 
     // Fill out and submit form
-    await user.type(screen.getByLabelText(/name/i), 'John Doe');
+    await user.type(screen.getByLabelText(/full name/i), 'John Doe');
     await user.type(screen.getByLabelText(/email/i), 'john@example.com');
     await user.type(screen.getByLabelText(/business name/i), 'Acme Corp');
     await user.type(screen.getByLabelText(/tell us about your business/i), 'We need a professional website for our growing business');
@@ -203,7 +212,7 @@ describe('Contact Form', () => {
     );
 
     // Fill out and submit form
-    await user.type(screen.getByLabelText(/name/i), 'John Doe');
+    await user.type(screen.getByLabelText(/full name/i), 'John Doe');
     await user.type(screen.getByLabelText(/email/i), 'john@example.com');
     await user.type(screen.getByLabelText(/business name/i), 'Acme Corp');
     await user.type(screen.getByLabelText(/tell us about your business/i), 'We need a professional website for our growing business');
@@ -231,7 +240,7 @@ describe('Contact Form', () => {
       </TestWrapper>
     );
 
-    const nameField = screen.getByLabelText(/name/i) as HTMLInputElement;
+    const nameField = screen.getByLabelText(/full name/i) as HTMLInputElement;
     const emailField = screen.getByLabelText(/email/i) as HTMLInputElement;
     const companyField = screen.getByLabelText(/business name/i) as HTMLInputElement;
     const messageField = screen.getByLabelText(/tell us about your business/i) as HTMLTextAreaElement;

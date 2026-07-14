@@ -20,6 +20,7 @@ import EmailSignatureGenerator from "@/pages/email-signature-generator";
 import AiReplyGenerator from "@/pages/ai-reply-generator";
 import AiPromptGenerator from "@/pages/ai-prompt-generator";
 import DemoSite from "@/pages/demo-site";
+import DemoDentist from "@/pages/demo-dentist";
 import Redirect from "@/pages/redirect";
 // Analytics library still available for tracking events and page views
 import { useAnalytics } from "./hooks/use-analytics";
@@ -44,6 +45,7 @@ function Router() {
       <Route path="/sitemap-extractor" component={SitemapExtractor} />
       <Route path="/email-signature-generator" component={EmailSignatureGenerator} />
       <Route path="/ai-reply-generator" component={AiReplyGenerator} />
+      <Route path="/demos/dentist" component={DemoDentist} />
       <Route path="/demos/:industry" component={DemoSite} />
       <Route path="/ai-prompt-generator" component={AiPromptGenerator} />
       <Route path="/redirect" component={Redirect} />

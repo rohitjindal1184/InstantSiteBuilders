@@ -145,13 +145,13 @@ export default function ConvertHtml() {
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={seoData.canonical} />
                 <meta property="og:site_name" content="InstantSiteBuilders" />
-                <meta property="og:image" content="https://instantsitebuilders.com/og-html-converter.png" />
+                <meta property="og:image" content="https://instantsitebuilders.com/og-image.png" />
 
                 {/* Twitter Card Tags */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={seoData.title} />
                 <meta name="twitter:description" content={seoData.description} />
-                <meta name="twitter:image" content="https://instantsitebuilders.com/og-html-converter.png" />
+                <meta name="twitter:image" content="https://instantsitebuilders.com/og-image.png" />
 
                 {/* Schema.org Structured Data */}
                 <script type="application/ld+json">

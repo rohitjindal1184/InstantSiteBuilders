@@ -105,6 +105,16 @@ export default function AiReplyGenerator() {
                     content="ai reply generator, email reply generator, social media response tool, free ai writing tool, automated replies"
                 />
                 <link rel="canonical" href="https://instantsitebuilders.com/ai-reply-generator" />
+                <meta property="og:title" content="Free AI Reply Generator | Email, Social Media & Text Response Tool" />
+                <meta property="og:description" content="Generate professional, friendly, or witty replies instantly with our free AI Reply Generator. Perfect for emails, LinkedIn, Twitter, and more using GPT-4o." />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://instantsitebuilders.com/ai-reply-generator" />
+                <meta property="og:site_name" content="InstantSiteBuilders" />
+                <meta property="og:image" content="https://instantsitebuilders.com/og-image.png" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Free AI Reply Generator | Email, Social Media & Text Response Tool" />
+                <meta name="twitter:description" content="Generate professional, friendly, or witty replies instantly with our free AI Reply Generator. Perfect for emails, LinkedIn, Twitter, and more using GPT-4o." />
+                <meta name="twitter:image" content="https://instantsitebuilders.com/og-image.png" />
                 <script type="application/ld+json">
                     {JSON.stringify({
                         "@context": "https://schema.org",

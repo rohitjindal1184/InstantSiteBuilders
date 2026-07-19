@@ -118,6 +118,11 @@ export default function SitemapExtractor() {
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={seoData.canonical} />
                 <meta property="og:site_name" content="InstantSiteBuilders" />
+                <meta property="og:image" content="https://instantsitebuilders.com/og-image.png" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={seoData.title} />
+                <meta name="twitter:description" content={seoData.description} />
+                <meta name="twitter:image" content="https://instantsitebuilders.com/og-image.png" />
                 <script type="application/ld+json">
                     {JSON.stringify(schemaData)}
                 </script>

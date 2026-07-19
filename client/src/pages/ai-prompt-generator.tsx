@@ -228,6 +228,16 @@ export default function AiPromptGenerator() {
                     content="ai prompt generator, prompt engineering tool, ape framework, race framework, spark framework, chatgpt prompt builder"
                 />
                 <link rel="canonical" href="https://instantsitebuilders.com/ai-prompt-generator" />
+                <meta property="og:title" content="Best AI Prompt Generator | APE, RACE & SPARK Framework Tools" />
+                <meta property="og:description" content="Create high-quality AI prompts using proven frameworks like APE, RACE, CREATE, and SPARK. Optimize your ChatGPT and Claude prompts for better results." />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://instantsitebuilders.com/ai-prompt-generator" />
+                <meta property="og:site_name" content="InstantSiteBuilders" />
+                <meta property="og:image" content="https://instantsitebuilders.com/og-image.png" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Best AI Prompt Generator | APE, RACE & SPARK Framework Tools" />
+                <meta name="twitter:description" content="Create high-quality AI prompts using proven frameworks like APE, RACE, CREATE, and SPARK. Optimize your ChatGPT and Claude prompts for better results." />
+                <meta name="twitter:image" content="https://instantsitebuilders.com/og-image.png" />
                 <script type="application/ld+json">
                     {JSON.stringify({
                         "@context": "https://schema.org",
